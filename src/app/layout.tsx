@@ -30,7 +30,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <li><a href="/">Accueil</a></li>
             <li><a href="/drops">Drops</a></li>
           </ul>
-          <button formAction={logout}>Logout</button>
+          <form action={logout} method="get"><button type="submit">logout</button></form>
         </nav>
       </header>
       <body className="min-h-full flex flex-col">{children}</body>

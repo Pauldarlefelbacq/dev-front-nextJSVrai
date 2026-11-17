@@ -3,23 +3,23 @@ import type { Drop } from "@/lib/api/types"
 
 export function dropComponent({ dropData }: { dropData: Drop }) {
     return (
-        <article className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-            <h2 className="text-lg font-semibold">
+        <article className="card p-4">
+            <h2 className="mb-2 text-lg font-semibold">
                 <Link
-                    className="text-gray-900 hover:text-black focus-visible:outline-black"
+                    className="hover:underline focus-visible:outline-2 focus-visible:outline-offset-2"
                     href={`/drops/${dropData.id}`}
                 >
                     {dropData.title}
                 </Link>
             </h2>
-            <p className="mt-2 text-sm text-gray-600">
+            <p className="text-muted text-sm">
                 {dropData.content ?? "Aucune description disponible."}
             </p>
-            <div className="flex w-full place-content-around">
-                <p className="mt-3 text-sm text-gray-700">
+            <div className="flex justify-between gap-4 text-sm">
+                <p className="text-muted mb-0">
                     {dropData.likesCount} j'aime
                 </p>
-                <p className="mt-3 text-sm text-gray-700">
+                <p className="text-muted mb-0">
                     Par {dropData.author.username}
                 </p>
             </div>

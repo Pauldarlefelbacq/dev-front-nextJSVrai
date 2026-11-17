@@ -9,12 +9,12 @@ export default function DropPage({ searchParams } : {searchParams: Promise<Searc
 
     return(
         <Suspense>
-            <div>
+            <main className="page-container">
                 <h1>Page des drops</h1>
                 <SearchComponent />
                 <CategoriesFilter searchParams={searchParams} />
                 <DropsList searchParams={searchParams} />
-            </div>
+            </main>
         </Suspense>
         
     )
