@@ -29,7 +29,7 @@ npm run build      # must pass before finishing a task
 
 ## 4. Environment
 
-`.env.local` (never committed; keep `.env.example` up to date):
+`.env.local` (never committed; keep):
 
 ```
 API_URL=https://drops-api-production.up.railway.app
@@ -324,7 +324,7 @@ Never show raw stack traces. Use the API `message` (already in French) when it i
 
 ## 13. Security
 
-- Never commit `.env*` files (except `.env.example`) or any key/token.
+- Never commit `.env.local*` files or any key/token.
 - Do not log tokens or passwords.
 - Hiding a button is not security: the API is the authority (it answers 401/403 anyway).
 
