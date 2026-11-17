@@ -32,7 +32,7 @@ npm run build      # must pass before finishing a task
 `.env.local` (never committed; keep `.env.example` up to date):
 
 ```
-NEXT_PUBLIC_API_URL=https://drops-api-production.up.railway.app
+API_URL=https://drops-api-production.up.railway.app
 ```
 
 Demo accounts for testing: `demo` / `drops2026` (any other first name, e.g. `lea`, has the same password: use a second account to test 403 cases).
@@ -243,7 +243,7 @@ Example drop (`GET /drops/{id}`):
 
 Keep one small helper that every function uses. It must:
 
-1. Prefix paths with `NEXT_PUBLIC_API_URL`.
+1. Prefix paths with `API_URL`.
 2. Send `Content-Type: application/json` when there is a body, and `Authorization: Bearer <token>` when a token is stored.
 3. Handle `204` (no body, do not call `res.json()`).
 4. On a non-2xx response, throw an `ApiError` carrying `status`, `code`, `message`, `fields`.
