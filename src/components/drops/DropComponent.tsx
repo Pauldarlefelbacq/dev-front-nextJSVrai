@@ -15,9 +15,14 @@ export function dropComponent({ dropData }: { dropData: Drop }) {
             <p className="mt-2 text-sm text-gray-600">
                 {dropData.content ?? "Aucune description disponible."}
             </p>
-            <p className="mt-3 text-sm text-gray-700">
-                {dropData.likesCount} j'aime
-            </p>
+            <div className="flex w-full place-content-around">
+                <p className="mt-3 text-sm text-gray-700">
+                    {dropData.likesCount} j'aime
+                </p>
+                <p className="mt-3 text-sm text-gray-700">
+                    Par {dropData.author.username}
+                </p>
+            </div>
         </article>
     )
 }

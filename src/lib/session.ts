@@ -1,4 +1,5 @@
 import { cookies } from "next/headers"
+import { redirect } from "next/navigation"
 
 export async function setSession(token: string){
     (await cookies()).set('session', token, {
@@ -8,4 +9,10 @@ export async function setSession(token: string){
         maxAge: 60*60*24,
         path: '/',
     })
+}
+
+export async function requireSession(){
+    const token = (await cookies()).get('session')?.value
+    if(!token) redirect('/login')
+    return token
 }

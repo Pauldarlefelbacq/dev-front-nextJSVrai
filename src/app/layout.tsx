@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { logout } from "./actions/auth";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,6 +24,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <header>
+        <nav>
+          <ul>
+            <li><a href="/">Accueil</a></li>
+            <li><a href="/drops">Drops</a></li>
+          </ul>
+          <button formAction={logout}>Logout</button>
+        </nav>
+      </header>
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );

@@ -1,5 +1,5 @@
 import 'server-only'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import { cookies } from "next/headers";
 
 export async function apiGet<T>(path: string){
@@ -29,3 +29,4 @@ export async function apiPost<T>(path: string, data: object){
     if (!res.ok) throw new Error(`API ${res.status} sur ${path}`);
     return res as T
 }
+
