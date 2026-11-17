@@ -1,9 +1,9 @@
 
 
-export default function editProfile(){
+export default function editDrops(){
     return (
     <div>
-
+  
     </div>
   );
 }
