@@ -11,3 +11,16 @@ export async function apiFetch<T>(path: string, token?: string){
     
     return (await res.json()) as T
 }
+
+export async function apiPost<T>(path: string, data: object){
+    const res = await fetch(`${process.env.API_URL}${path}`, {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+            "Content-Type": "application/json",
+        }
+    })
+    if (res.status === 404) notFound();
+    if (!res.ok) throw new Error(`API ${res.status} sur ${path}`);
+    return res as T
+}
