@@ -14,6 +14,8 @@ export function SearchComponent(){
             router.replace(`?${next}`)
     }, 300)
 
-    return <input defaultValue={params.get('q') ?? ''} 
-        onChange={(e)=> onSearch(e.target.value)} />
+    return <input 
+                defaultValue={params.get('q') ?? ''} 
+                onChange={(e)=> onSearch(e.target.value)} 
+            />
 }
