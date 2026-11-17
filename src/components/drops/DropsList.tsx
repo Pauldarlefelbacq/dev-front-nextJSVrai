@@ -1,9 +1,9 @@
-import { apiFetch } from "@/lib/api/client";
+import { apiGet } from "@/lib/api/client";
 import { DropPage } from "@/lib/api/types";
 import { dropComponent as DropComponent } from "./DropComponent";
 
 export async function DropsList({ FilterText, Categorie } : { FilterText?: string, Categorie?: string }){
-    let dropsList = await apiFetch<DropPage>('/drops');
+    let dropsList = await apiGet<DropPage>('/drops');
     return(
         <div>
             <ul>

@@ -1,7 +1,7 @@
 'use server'
 
 import { redirect } from "next/navigation"
-import { apiFetch, apiPost } from "@/lib/api/client"
+import { apiGet, apiPost } from "@/lib/api/client"
 import { setSession } from "@/lib/session"
 import type { AuthResponse } from "@/lib/api/types"
 

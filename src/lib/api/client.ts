@@ -1,7 +1,12 @@
 import 'server-only'
 import { notFound } from 'next/navigation'
+import { cookies } from "next/headers";
 
-export async function apiFetch<T>(path: string, token?: string){
+export async function apiGet<T>(path: string){
+    const token = (await cookies()).get('session')?.value
+    console.log(`token:\n${token}`);
+    
+
     const res = await fetch(`${process.env.API_URL}${path}`, {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
     })
