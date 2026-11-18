@@ -1,7 +1,7 @@
 'use server'
 
 import { apiDelete, apiPost } from "@/lib/api/client"
-import { Drop } from "@/lib/api/types"
+import type { Drop } from "@/lib/api/types"
 import { requireSession } from "@/lib/session"
 import { refresh, revalidatePath } from "next/cache"
 import { ApiError } from "next/dist/server/api-utils"
@@ -42,4 +42,27 @@ export async function toggleLike(dropId: number, liked: boolean){
 
     refresh()
     return{}
+}
+
+type ComFormState = {
+    error?: string
+    success?: string
+}
+
+export async function createCom(dropId: number, _prev: ComFormState, formData: FormData): Promise<ComFormState>{
+    await requireSession();
+    try{
+        await apiPost(`/drops/${dropId}/comments`, {
+            content: formData.get('content'),
+        })
+    } catch(err){
+        if (err instanceof Error) return { error: err.message }
+        throw err
+    }
+    revalidatePath(`/drops/${dropId}`)
+    return { success: "Commentaire envoyé." }
+}
+
+export async function modifyCom(dropId: number){
+    return;
 }

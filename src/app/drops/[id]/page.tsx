@@ -1,4 +1,6 @@
+import { ComList } from "@/components/drops/commentaires/CommentairesList";
 import { LikeButton } from "@/components/drops/LikeButton";
+import { newComForm as NewComForm } from "@/components/drops/commentaires/add/NewComForm";
 import { apiGet } from "@/lib/api/client";
 import type { Drop } from "@/lib/api/types";
 import Link from "next/link";
@@ -67,6 +69,11 @@ export default async function dropPage({ params }: { params: { id: string } }) {
           </div>
         </div>
       </article>
+      <section className="mt-8 grid gap-4">
+        <h2 className="text-xl font-semibold">Commentaires</h2>
+        <NewComForm dropId={drop.id} />
+        {ComList(drop.id)}
+      </section>
     </main>
   );
 }
