@@ -11,11 +11,17 @@ export async function createDrop(_prev: { fields?: string }, formData: FormData)
     await requireSession()
     let drop: Drop
     try {
-        drop = await apiPost<Drop>('/drops', { // y mettre les infos du drop au moment venu
-
+        const res = await apiPost('/drops', {
+            title: formData.get('title'),
+            content: formData.get('content'),
+            category: formData.get('category'),
+            imageUrl: formData.get('imageUrl') || undefined,
+            lat: Number(formData.get('lat')),
+            lng: Number(formData.get('lng')),
         })
+        drop = await res.json() as Drop
     } catch (err) {
-        if (err instanceof ApiError) return { fields: err.message }
+        if (err instanceof ApiError) return { fields: err.fields.title }
         throw err
     }
 

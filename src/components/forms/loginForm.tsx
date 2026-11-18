@@ -17,7 +17,7 @@ export function LoginForm(){
                 </p>
                 <form action={action} className="grid gap-5">
                     <label className="form-field">
-                        Nom d’utilisateur ou e-mail
+                        Nom d'utilisateur ou e-mail
                         <input
                             className="form-input"
                             type="text"
