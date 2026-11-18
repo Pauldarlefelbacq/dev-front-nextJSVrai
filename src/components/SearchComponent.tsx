@@ -14,6 +14,7 @@ export function SearchComponent(){
     }, 300)
 
     return <input 
+                className="border px-1 py-0.5"
                 defaultValue={params.get('q') ?? ''} 
                 onChange={(e)=> onSearch(e.target.value)} 
             />

@@ -9,7 +9,17 @@ import { cookies } from "next/headers"
 export type LoginState = { error?: string }
 
 export async function Signup(formData: FormData){
-    
+    const res = await apiPost('/auth/register',  {
+        username: formData.get('username'),
+        email: formData.get('email'),
+        password: formData.get('password'),
+        displayName: formData.get('displayName'),
+        bio: formData.get('bio'),
+    })
+    if (!res.ok) return { error: 'Identifiants incorrects' }
+    const { token } = (await res.json()) as AuthResponse
+    await setSession(token)
+    redirect('/')
 }
 
 export async function Login(_prev: LoginState, formData: FormData): Promise<LoginState>{

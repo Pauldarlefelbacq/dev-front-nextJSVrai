@@ -1,7 +1,9 @@
 import Link from "next/link"
 import type { Drop } from "@/lib/api/types"
+import { LikeButton } from "./LikeButton"
 
 export function dropComponent({ dropData }: { dropData: Drop }) {
+
     return (
         <article className="card p-4">
             <h2 className="mb-2 text-lg font-semibold">

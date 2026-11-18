@@ -1,3 +1,4 @@
+import { LikeButton } from "@/components/drops/LikeButton";
 import { apiGet } from "@/lib/api/client";
 import type { Drop } from "@/lib/api/types";
 import Link from "next/link";
@@ -62,6 +63,7 @@ export default async function dropPage({ params }: { params: { id: string } }) {
             <p className="font-medium text-gray-800 dark:text-gray-200">
               {drop.likesCount} j'aime
             </p>
+            <LikeButton dropId={drop.id} isLiked={drop.likedByMe} likeCount={drop.likesCount} />
           </div>
         </div>
       </article>

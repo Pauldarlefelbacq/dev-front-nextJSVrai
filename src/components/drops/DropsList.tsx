@@ -21,7 +21,7 @@ export async function DropsList({ searchParams } : {searchParams: Promise<Search
     return(
         <Suspense>
             <div>
-                <ul>
+                <ul className="*:my-2">
                     {dropsList.items.length === 0 ? (
                         <p>Aucun drop n'est disponible</p>
                         ):(
