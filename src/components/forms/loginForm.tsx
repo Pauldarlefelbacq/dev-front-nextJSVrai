@@ -45,6 +45,10 @@ export function LoginForm(){
                         {pending ? "Connexion..." : "Se connecter"}
                     </button>
                 </form>
+                <div>
+                    <p>Pas encore de compte ?</p>
+                    <a href="/register">S'incrire</a>
+                </div>
             </section>
         </main>
     )

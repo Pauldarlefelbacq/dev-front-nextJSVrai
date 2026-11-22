@@ -5,42 +5,55 @@ import { createDrop } from "@/app/actions/drops"
 import type { Category } from "@/lib/api/types"
 
 export function newDropForm({categories}: {categories: Category[]}){
-    const [state, action, pending] = useActionState(createDrop, {})
+    const [, action, pending] = useActionState(createDrop, {})
     
     return(
-        <main>
-            <h1>Créer un nouveau drop</h1>
-            <form action={action}>
-                <label>
+        <main className="page-container">
+            <section className="card mx-auto w-full max-w-2xl p-6 sm:p-8">
+                <h1 className="mb-2">Créer un nouveau drop</h1>
+                <p className="text-muted mb-6">
+                    Partagez un message avec les personnes autour de vous.
+                </p>
+                <form action={action} className="grid gap-5">
+                    <label className="form-field">
                     Titre
-                    <input type="text" name="title" minLength={3} maxLength={80} required />
-                </label>
-                <label>
+                        <input className="form-input" type="text" name="title" minLength={3} maxLength={80} required />
+                    </label>
+                    <label className="form-field">
                     Contenu
-                    <input type="text" name="content" maxLength={1000} required />
-                </label>
-                <label>
+                        <textarea className="form-input min-h-32 resize-y" name="content" maxLength={1000} required />
+                    </label>
+                    <label className="form-field">
                     Categorie
-                    <select name="category" required>
-                        {categories.map((cat)=>(
-                            <option key={cat.id} value={cat.id}>{cat.label}</option>
-                        ))}
-                    </select>
-                </label>
-                <label>
+                        <select className="form-input" name="category" required>
+                            {categories.map((cat)=>(
+                                <option key={cat.id} value={cat.id}>{cat.label}</option>
+                            ))}
+                        </select>
+                    </label>
+                    <label className="form-field">
                     URL de l'image
-                    <input type="url" name="imageUrl" />
-                </label>
-                <label>
+                        <input className="form-input" type="url" name="imageUrl" />
+                    </label>
+                    <fieldset className="grid gap-4 sm:grid-cols-2">
+                        <legend className="mb-2 text-sm font-medium">Position</legend>
+                        <label className="form-field">
                     Latitude
-                    <input type="number" name="lat"step="any" required />
-                </label>
-                <label>
+                            <input className="form-input" type="number" name="lat" step="any" required />
+                        </label>
+                        <label className="form-field">
                     Longitude
-                    <input type="number" name="lng" step="any" required />
-                </label>
-                <button type="submit" disabled={pending}>Créer le drop</button>
-            </form>
+                            <input className="form-input" type="number" name="lng" step="any" required />
+                        </label>
+                        <p className="text-muted mb-0 text-sm sm:col-span-2">
+                            Le drop doit se trouver à moins de 3 km du département MMI.
+                        </p>
+                    </fieldset>
+                    <button className="button-primary justify-self-start" type="submit" disabled={pending}>
+                        {pending ? "Création…" : "Créer le drop"}
+                    </button>
+                </form>
+            </section>
         </main>
     )
 }

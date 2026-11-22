@@ -15,7 +15,7 @@ export function dropComponent({ dropData }: { dropData: Drop }) {
             </h2>
             <img
                 className="max-w-full mx-auto border p-1 rounded-sm" 
-                src={dropData.imageUrl} 
+                src={dropData.imageUrl ?? "https://placehold.co/600x400"} 
                 alt="image placeholder pr l'instant" 
             />
             <p className="text-muted text-sm">

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 // import geolocation
 
 export function LocationField(){
-    const { status, coords, locate } = //geo;
+    // const { status, coords, locate } = 
     const [lat, setLat] = useState('')
     const [lng, setLng] = useState('')
     

@@ -32,6 +32,25 @@ export async function apiPost<T>(path: string, data?: object){
     })
     if (res.status === 404) notFound();
     if (!res.ok) throw new Error(`API ${res.status} sur ${path}`);
+    return (await res.json()) as T
+}
+
+export async function apiPatch<T>(path:string, data?: object){
+    const token = (await cookies()).get('session')?.value
+    
+    const res = await fetch(`${process.env.API_URL}${path}`, {
+        method: 'PATCH',
+        body: JSON.stringify(data),
+        headers: token ? {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        }:
+        {
+            "Content-Type": "application/json",
+        }
+    })
+    if (res.status === 404) notFound();
+    if (!res.ok) throw new Error(`API ${res.status} sur ${path}`);
     return res as T
 }
 
