@@ -1,13 +1,15 @@
 'use server'
 
 import { redirect } from "next/navigation"
-import { apiPost, toApiActionState, type ApiActionState } from "@/lib/api/client"
-import { setSession } from "@/lib/session"
-import type { AuthResponse } from "@/lib/api/types"
+import { revalidatePath } from "next/cache"
+import { apiPatch, apiPost, toApiActionState, type ApiActionState } from "@/lib/api/client"
+import { requireSession, setSession } from "@/lib/session"
+import type { AuthResponse, PrivateUser } from "@/lib/api/types"
 import { cookies } from "next/headers"
 
 export type LoginState = ApiActionState
 export type SignupState = ApiActionState
+export type UpdateProfileState = ApiActionState & { success?: string }
 
 export async function Signup(_prev: SignupState, formData: FormData): Promise<SignupState>{
     let res: AuthResponse
@@ -40,6 +42,30 @@ export async function Login(_prev: LoginState, formData: FormData): Promise<Logi
     const { token } = res
     await setSession(token)
     redirect('/')
+}
+
+export async function updateMyProfile(
+    _prev: UpdateProfileState,
+    formData: FormData,
+): Promise<UpdateProfileState> {
+    await requireSession()
+
+    const displayName = String(formData.get("displayName") ?? "").trim()
+    const bio = String(formData.get("bio") ?? "").trim()
+    const avatarUrl = String(formData.get("avatarUrl") ?? "").trim()
+
+    try {
+        await apiPatch<PrivateUser>("/auth/me", {
+            displayName,
+            bio: bio || null,
+            avatarUrl: avatarUrl || null,
+        })
+    } catch (error) {
+        return toApiActionState(error)
+    }
+
+    revalidatePath("/me")
+    return { success: "Votre profil a été mis à jour." }
 }
 
 export async function logout(){

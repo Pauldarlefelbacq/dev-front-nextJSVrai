@@ -30,14 +30,17 @@ async function LogoutControl() {
   if (!isSignedUp) return null;
 
   return (
-    <form action={logout}>
-      <button
-        className="rounded-full bg-brand-secondary px-3 py-2 text-sm font-semibold text-brand-main transition-colors hover:bg-brand-tertiary"
-        type="submit"
-      >
-        logout
-      </button>
-    </form>
+    <div className="flex items-center gap-4">
+      <Link className="font-semibold transition-colors hover:text-brand-secondary" href="/me">Mon profil</Link>
+      <form action={logout}>
+        <button
+          className="rounded-full bg-brand-secondary px-3 py-2 text-sm font-semibold text-brand-main transition-colors hover:bg-brand-tertiary"
+          type="submit"
+        >
+          logout
+        </button>
+      </form>
+    </div>
   );
 }
 
