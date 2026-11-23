@@ -10,11 +10,14 @@ export async function CategoriesFilter({ searchParams } : {searchParams: Promise
     const activeCat = typeof params.category === "string" ? params.category : undefined
 
     const categories = await apiGet<Category[]>("/categories")
+    const filterLinkClass = "rounded-full border px-3 py-1 text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
+    const inactiveClass = "border-border bg-card text-card-foreground"
+    const activeClass = "border-transparent bg-secondary text-secondary-foreground"
 
     return (
         <nav className="flex flex-wrap gap-2">
-            <Link 
-                className={`p-1 mx-5 rounded-sm hover:bg-gray-200 hover:text-gray-700 ${activeCat ? "bg-white border text-black" : "bg-black text-white" }`}
+            <Link
+                className={`${filterLinkClass} ${activeCat ? inactiveClass : activeClass}`}
                 href="/drops">
                 Toutes
             </Link>
@@ -22,7 +25,7 @@ export async function CategoriesFilter({ searchParams } : {searchParams: Promise
                 const isActive = category.id === activeCat
                 return(
                     <Link
-                        className={`p-1 mx-5 rounded-sm hover:bg-gray-200 hover:text-gray-700 ${!isActive ? "bg-white border text-black" : "bg-black text-white" }`}
+                        className={`${filterLinkClass} ${isActive ? activeClass : inactiveClass}`}
                         href={`/drops?category=${encodeURIComponent(category.id)}`}
                         key={category.id}
                     >

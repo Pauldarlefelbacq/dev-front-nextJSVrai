@@ -15,5 +15,9 @@ export default function statusPage(){
 
 async function Health(){
     const res = await fetch(`${process.env.API_URL}/health`)
-    return <p className="text-3xl text-red-500 font-black">{res.ok ? 'API en ligne' : 'API hors ligne'}</p>
+    return (
+        <p className={`inline-flex rounded-full px-4 py-2 text-3xl font-black ${res.ok ? "bg-secondary text-secondary-foreground" : "bg-destructive text-destructive-foreground"}`}>
+            {res.ok ? 'API en ligne' : 'API hors ligne'}
+        </p>
+    )
 }

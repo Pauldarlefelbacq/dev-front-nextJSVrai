@@ -20,29 +20,29 @@ export function DropCard({ dropData }: { dropData: Drop }) {
                     className="aspect-video w-full object-cover"
                 />
             </Link>
-            <CardHeader>
+            <CardHeader className="text-foreground">
                 <CardTitle>
-                    <Link className="hover:underline" href={`/drops/${dropData.id}`}>
+                    <Link className="transition-colors hover:text-brand-secondary hover:underline" href={`/drops/${dropData.id}`}>
                         {dropData.title}
                     </Link>
                 </CardTitle>
                 <CardAction>
-                    <span className="rounded-full border px-2 py-1 text-xs">
+                    <span className="rounded-full bg-accent px-2 py-1 text-xs text-accent-foreground">
                         {dropData.category}
                     </span>
                 </CardAction>
                 <CardDescription>
                     Par{" "}
-                    <Link className="hover:underline" href={`/users/${dropData.author.username}`}>
+                    <Link className="transition-colors hover:text-brand-secondary hover:underline" href={`/users/${dropData.author.username}`}>
                         {dropData.author.displayName}
                     </Link>
                 </CardDescription>
             </CardHeader>
-            <CardContent className="">
-                <p className="mb-3 ">
+            <CardContent>
+                <p className="mb-3 text-foreground">
                     {dropData.content ?? "Aucune description disponible."}
                 </p>
-                <div className="flex flex-wrap justify-between gap-2">
+                <div className="flex flex-wrap justify-between gap-2 text-muted-foreground">
                     <span><strong>{dropData.likesCount}</strong> j'aime</span>
                     <span>
                         {dropData.location.lat}, {dropData.location.lng}
@@ -51,7 +51,7 @@ export function DropCard({ dropData }: { dropData: Drop }) {
             </CardContent>
             <CardFooter>
                 <Link
-                    className="hover:underline focus-visible:outline-2 focus-visible:outline-offset-2"
+                    className="text-foreground transition-colors hover:text-brand-secondary hover:underline focus-visible:outline-2 focus-visible:outline-offset-2"
                     href={`/drops/${dropData.id}`}
                 >
                     Voir le drop

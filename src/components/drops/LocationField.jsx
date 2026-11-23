@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from "react";
-import { useGeolocalisation } from "@/lib/use-geolocalisation";
+import { useGeolocalisation } from "@/lib/hooks/use-geolocalisation";
 import { Spinner } from "../ui/spinner";
 import { Button } from "../ui/button";
 

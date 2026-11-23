@@ -26,7 +26,7 @@ export function DeleteDropButton({ dropId }: { dropId: number }) {
                 <DialogFooter>
                     <span className="flex flex-row-reverse gap-5 px-2 *:cursor-pointer *:rounded-sm *:p-0.5">
                         <button
-                            className="bg-red-500 font-black text-gray-200 hover:bg-gray-300 hover:text-red-500"
+                            className="bg-destructive px-2 py-1 font-black text-destructive-foreground hover:bg-destructive/80"
                             type="button"
                             onClick={() => deleteDrop(dropId)}
                         >

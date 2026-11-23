@@ -10,22 +10,22 @@ export function ComComponent(ComData: Comment){
     }).format(new Date(ComData.createdAt))
 
     return(
-        <article className="card p-4">
+        <article className="card border-border bg-card p-4 text-card-foreground">
             <header className="mb-2 flex flex-wrap items-center justify-between gap-2">
                 <div>
-                    <p className="mb-0 font-semibold">{ComData.author.displayName}</p>
-                    <p className="mb-0 text-sm">@{ComData.author.username}</p>
+                    <p className="mb-0 font-semibold text-foreground">{ComData.author.displayName}</p>
+                    <p className="mb-0 text-sm text-muted-foreground">@{ComData.author.username}</p>
                 </div>
                 <div className="flex items-center gap-3">
                     {ComData.isMine && (
                         <div>
-                            <span className="rounded-full border border-[var(--border)] px-2.5 py-1 text-xs font-medium">
+                            <span className="rounded-full border border-border bg-accent px-2.5 py-1 text-xs font-medium text-accent-foreground">
                                 Votre commentaire
                             </span>
                             {DeleteComButton(ComData.id)}
                         </div>
                     )}
-                    <time className="text-sm" dateTime={ComData.createdAt}>
+                    <time className="text-sm text-muted-foreground" dateTime={ComData.createdAt}>
                         {date}
                     </time>
                 </div>
