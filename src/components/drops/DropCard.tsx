@@ -9,6 +9,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
+import { LikesCountWidget } from "../LikesCountWidget"
 
 export function DropCard({ dropData }: { dropData: Drop }) {
     return (
@@ -43,7 +44,7 @@ export function DropCard({ dropData }: { dropData: Drop }) {
                     {dropData.content ?? "Aucune description disponible."}
                 </p>
                 <div className="flex flex-wrap justify-between gap-2 text-muted-foreground">
-                    <span><strong>{dropData.likesCount}</strong> j'aime</span>
+                    <LikesCountWidget dropId={dropData.id} dropLikes={dropData.likesCount} />
                     <span>
                         {dropData.location.lat}, {dropData.location.lng}
                     </span>
