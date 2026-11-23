@@ -9,12 +9,13 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '@/components/ui/dialog'
+import { Button } from "@/components/ui/button"
 
 export function DeleteComButton(comId: number){
 
     return(
         <Dialog>
-            <DialogTrigger render={<button>Supprimer</button>} />
+            <DialogTrigger render={<Button>Supprimer</Button>} />
             <DialogContent showCloseButton={false}>
                 <DialogHeader>
                     <DialogTitle>Supprimer le commentaire ?</DialogTitle>

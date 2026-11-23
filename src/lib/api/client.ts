@@ -51,7 +51,7 @@ export async function apiPatch<T>(path:string, data?: object){
     })
     if (res.status === 404) notFound();
     if (!res.ok) throw new Error(`API ${res.status} sur ${path}`);
-    return res as T
+    return (await res.json()) as T
 }
 
 export async function apiDelete(path: string): Promise<void>{

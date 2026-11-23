@@ -57,7 +57,12 @@ export default async function dropPage({ params }: { params: { id: string } }) {
             </p>
             <LikeButton dropId={drop.id} isLiked={drop.likedByMe} likeCount={drop.likesCount} />
           </div>
-          {drop.isMine && <DeleteDropButton dropId={drop.id} />}
+          {drop.isMine && (
+            <div className="flex items-center gap-3">
+              <Link href={`/drops/${drop.id}/edit`}>Modifier</Link>
+              <DeleteDropButton dropId={drop.id} />
+            </div>
+          )}
         </div>
       </article>
       <section className="mt-8 grid gap-4">
