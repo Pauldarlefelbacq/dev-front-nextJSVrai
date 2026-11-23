@@ -1,6 +1,7 @@
 'use client'
 
 import type { Comment } from "@/lib/api/types"
+import { DeleteComButton } from "../DeleteComButton"
 
 export function ComComponent(ComData: Comment){
     const date = new Intl.DateTimeFormat("fr-FR", {
@@ -17,9 +18,12 @@ export function ComComponent(ComData: Comment){
                 </div>
                 <div className="flex items-center gap-3">
                     {ComData.isMine && (
-                        <span className="text-muted rounded-full border border-[var(--border)] px-2.5 py-1 text-xs font-medium">
-                            Votre commentaire
-                        </span>
+                        <div>
+                            <span className="text-muted rounded-full border border-[var(--border)] px-2.5 py-1 text-xs font-medium">
+                                Votre commentaire
+                            </span>
+                            {DeleteComButton(ComData.id)}
+                        </div>
                     )}
                     <time className="text-muted text-sm" dateTime={ComData.createdAt}>
                         {date}

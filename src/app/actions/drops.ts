@@ -94,3 +94,13 @@ export async function modifyCom(dropId: number){
     return;
 }
 
+export async function deleteCom(comId: number){
+    await requireSession();
+    try{
+        await apiDelete(`/comments/${comId}`)
+    }catch(err){
+        if (err instanceof ApiError) return { fields: err.message} //remplacer par la vraie erreur mais long
+        throw err
+    }
+    refresh();
+}

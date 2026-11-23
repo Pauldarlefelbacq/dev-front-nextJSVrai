@@ -20,7 +20,7 @@ export function newComForm({ dropId }: { dropId: number }){
             </label>
             {state.error && <p className="form-error mb-0" role="alert">{state.error}</p>}
             {state.success && <p className="text-muted mb-0" role="status">{state.success}</p>}
-            <button className="button-primary justify-self-start" type="submit" disabled={pending}>
+            <button className=" justify-self-start" type="submit" disabled={pending}>
                 {pending ? "Envoi…" : "Envoyer le commentaire"}
             </button>
         </form>
