@@ -58,7 +58,7 @@ export async function EditDrop(dropId: number, _prev: EditDropState, formData: F
 export async function deleteDrop(dropId: number){
     await requireSession()
     try{
-        await apiDelete(`/drops${dropId}`)
+        await apiDelete(`/drops/${dropId}`)
     }catch(err){
         if (err instanceof ApiError) return { fields: err.message} //remplacer par la vraie erreur mais long
         throw err
