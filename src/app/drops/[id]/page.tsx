@@ -17,7 +17,7 @@ export default async function dropPage({ params }: { params: { id: string } }) {
       <div>
         <PresenceWidget dropId={drop.id} />
       </div>
-      <article className="overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-sm">
+      <article className="overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-sm mt-5">
         {drop.imageUrl && (
           <img
             src={drop.imageUrl}

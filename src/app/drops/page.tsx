@@ -13,7 +13,7 @@ export default async function DropPage({ searchParams } : {searchParams: Promise
 
     return(
         <Suspense>
-            <main className="page-container">
+            <main className="page-container *:my-3">
                 <h1>Page des drops</h1>
                 <SearchComponent />
                 <CategoriesFilter searchParams={searchParams} />

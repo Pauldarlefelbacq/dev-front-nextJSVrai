@@ -12,10 +12,26 @@ export function ComComponent(ComData: Comment){
     return(
         <article className="card border-border bg-card p-4 text-card-foreground">
             <header className="mb-2 flex flex-wrap items-center justify-between gap-2">
-                <div>
-                    <p className="mb-0 font-semibold text-foreground">{ComData.author.displayName}</p>
-                    <p className="mb-0 text-sm text-muted-foreground">@{ComData.author.username}</p>
-                </div>
+                <span className="flex gap-2">
+                    <span
+                        key={ComData.author.id}
+                        className="flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border-2 border-background bg-secondary text-sm font-semibold text-secondary-foreground"
+                    >
+                        {ComData.author.avatarUrl ? (
+                            <img
+                                src={ComData.author.avatarUrl}
+                                alt=""
+                                className="h-full w-full object-cover"
+                            />
+                        ) : (
+                            ComData.author.displayName.trim().charAt(0).toUpperCase() || "?"
+                        )}
+                    </span>
+                    <div>
+                        <p className="mb-0 font-semibold text-foreground">{ComData.author.displayName}</p>
+                        <p className="mb-0 text-sm text-muted-foreground">@{ComData.author.username}</p>
+                    </div>
+                </span>
                 <div className="flex items-center gap-3">
                     {ComData.isMine && (
                         <div>
