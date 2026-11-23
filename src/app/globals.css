@@ -183,6 +183,16 @@ h1 {
   outline-offset: 2px;
 }
 
+.form-input[aria-invalid="true"] {
+  border-color: #b42318;
+}
+
+.form-fieldset-invalid {
+  border: 1px solid #b42318;
+  border-radius: 0.75rem;
+  padding: 1rem;
+}
+
 .button-primary {
   border: 0;
   border-radius: 0.5rem;

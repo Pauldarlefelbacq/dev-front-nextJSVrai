@@ -2,13 +2,14 @@
 
 import { useActionState } from "react"
 import { Login, type LoginState } from "../../app/actions/auth"
+import { FieldError } from "./FieldError"
 import { Spinner } from "../ui/spinner"
 import { Button } from "../ui/button"
 
 const initialState: LoginState = {}
 
 export function LoginForm(){
-    const [state, action, pending] = useActionState(Login, {})
+    const [state, action, pending] = useActionState(Login, initialState)
 
     return (
         <main className="page-container flex flex-1 items-center justify-center">
@@ -25,8 +26,11 @@ export function LoginForm(){
                             type="text"
                             name="login"
                             autoComplete="username"
+                            aria-invalid={Boolean(state.fields?.login?.length)}
+                            aria-describedby={state.fields?.login?.length ? "login-error" : undefined}
                             required
                         />
+                        <FieldError id="login-error" messages={state.fields?.login} />
                     </label>
                     <label className="form-field">
                         Mot de passe
@@ -35,8 +39,11 @@ export function LoginForm(){
                             type="password"
                             name="password"
                             autoComplete="current-password"
+                            aria-invalid={Boolean(state.fields?.password?.length)}
+                            aria-describedby={state.fields?.password?.length ? "password-error" : undefined}
                             required
                         />
+                        <FieldError id="password-error" messages={state.fields?.password} />
                     </label>
                     {state.error && (
                         <p className="form-error" role="alert">

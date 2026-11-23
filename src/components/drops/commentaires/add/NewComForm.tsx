@@ -4,6 +4,7 @@ import { useActionState } from "react"
 import { createCom } from "@/app/actions/drops"
 import { Spinner } from "@/components/ui/spinner"
 import { Button } from "@/components/ui/button"
+import { FieldError } from "@/components/forms/FieldError"
 
 export function newComForm({ dropId }: { dropId: number }){
     const [state, action, pending] = useActionState(createCom.bind(null, dropId), {})
@@ -17,8 +18,11 @@ export function newComForm({ dropId }: { dropId: number }){
                     name="content"
                     minLength={1}
                     maxLength={500}
+                    aria-invalid={Boolean(state.fields?.content?.length)}
+                    aria-describedby={state.fields?.content?.length ? "comment-content-error" : undefined}
                     required
                 />
+                <FieldError id="comment-content-error" messages={state.fields?.content} />
             </label>
             {state.error && <p className="form-error mb-0" role="alert">{state.error}</p>}
             {state.success && <p className="text-muted mb-0" role="status">{state.success}</p>}

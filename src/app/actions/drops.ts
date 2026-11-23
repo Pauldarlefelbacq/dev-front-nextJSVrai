@@ -1,15 +1,20 @@
 'use server'
 
-import { apiDelete, apiPatch, apiPost } from "@/lib/api/client"
-import type { Drop, ErrorResponse } from "@/lib/api/types"
-import { requireSession } from "@/lib/session"
+import { apiDelete, apiPatch, apiPost, ApiError, toApiActionState, type ApiActionState } from "@/lib/api/client"
+import type { Drop } from "@/lib/api/types"
+import { getToken, requireSession } from "@/lib/session"
 import { refresh, revalidatePath } from "next/cache"
-import { ApiError } from "next/dist/server/api-utils"
 import { redirect } from "next/navigation"
 
 //      Drops
-export async function createDrop(_prev: { fields?: string }, formData: FormData){
-    await requireSession()
+export type DropActionState = ApiActionState
+
+export async function createDrop(_prev: DropActionState, formData: FormData): Promise<DropActionState>{
+    const token = await getToken()
+    if (!token) {
+        return { error: "Vous devez être connecté pour créer un drop." }
+    }
+
     let drop: Drop
     try {
         drop = await apiPost<Drop>('/drops', {
@@ -20,20 +25,15 @@ export async function createDrop(_prev: { fields?: string }, formData: FormData)
             lat: Number(formData.get('lat')),
             lng: Number(formData.get('lng')),
         })
-    } catch (err: any) {
-        if (err) return { fields: err.error.fields.title }
-        throw err
+    } catch (error) {
+        return toApiActionState(error)
     }
 
     revalidatePath('/drops')
     redirect(`/drops/${drop.id}`)
 }
 
-type EditDropState = {
-    error?: string
-}
-
-export async function EditDrop(dropId: number, _prev: EditDropState, formData: FormData): Promise<EditDropState>{
+export async function EditDrop(dropId: number, _prev: ApiActionState, formData: FormData): Promise<ApiActionState>{
     await requireSession()
 
     try {
@@ -47,8 +47,7 @@ export async function EditDrop(dropId: number, _prev: EditDropState, formData: F
             lng: Number(formData.get('lng')),
         })
     } catch (error) {
-        if (error instanceof Error) return { error: error.message }
-        throw error
+        return toApiActionState(error)
     }
 
     revalidatePath(`/drops/${dropId}`)
@@ -82,8 +81,7 @@ export async function toggleLike(dropId: number, liked: boolean){
     return{}
 }
 
-type ComFormState = {
-    error?: string
+export type ComFormState = ApiActionState & {
     success?: string
 }
 
@@ -95,8 +93,7 @@ export async function createCom(dropId: number, _prev: ComFormState, formData: F
             content: formData.get('content'),
         })
     } catch(err){
-        if (err instanceof Error) return { error: err.message }
-        throw err
+        return toApiActionState(err)
     }
     revalidatePath(`/drops/${dropId}`)
     return { success: "Commentaire envoyé." }
