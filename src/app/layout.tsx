@@ -6,6 +6,7 @@ import { logout } from "./actions/auth";
 import { cookies } from "next/headers";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import { OnlineWidget } from "@/components/OnlineWidget";
 
 const jetbrainsMono = JetBrains_Mono({subsets:['latin'],variable:'--font-mono'});
 
@@ -53,6 +54,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col">
         <header className="border-b-4 border-brand-tertiary bg-brand-main text-white">
           <nav className="mx-auto flex w-full max-w-5xl items-center justify-between gap-4 px-4 py-3">
+            <OnlineWidget />
             <ul className="flex items-center gap-5">
               <li><Link className="font-semibold transition-colors hover:text-brand-secondary" href="/">Accueil</Link></li>
               <li><Link className="font-semibold transition-colors hover:text-brand-secondary" href="/drops">Drops</Link></li>
