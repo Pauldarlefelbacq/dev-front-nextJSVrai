@@ -1,6 +1,5 @@
 import Link from "next/link"
 import type { Drop } from "@/lib/api/types"
-import { LikeButton } from "./LikeButton"
 
 export function dropComponent({ dropData }: { dropData: Drop }) {
 
@@ -14,6 +13,11 @@ export function dropComponent({ dropData }: { dropData: Drop }) {
                     {dropData.title}
                 </Link>
             </h2>
+            <img
+                className="max-w-full mx-auto border p-1 rounded-sm" 
+                src={dropData.imageUrl ?? "https://placehold.co/600x400"} 
+                alt="image placeholder pr l'instant" 
+            />
             <p className="text-muted text-sm">
                 {dropData.content ?? "Aucune description disponible."}
             </p>
@@ -24,6 +28,7 @@ export function dropComponent({ dropData }: { dropData: Drop }) {
                 <p className="text-muted mb-0">
                     Par {dropData.author.username}
                 </p>
+                <p>lat{dropData.location.lat} long{dropData.location.lng}</p>
             </div>
         </article>
     )
