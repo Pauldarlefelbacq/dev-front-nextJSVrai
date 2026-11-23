@@ -14,18 +14,18 @@ export function ComComponent(ComData: Comment){
             <header className="mb-2 flex flex-wrap items-center justify-between gap-2">
                 <div>
                     <p className="mb-0 font-semibold">{ComData.author.displayName}</p>
-                    <p className="text-muted mb-0 text-sm">@{ComData.author.username}</p>
+                    <p className="mb-0 text-sm">@{ComData.author.username}</p>
                 </div>
                 <div className="flex items-center gap-3">
                     {ComData.isMine && (
                         <div>
-                            <span className="text-muted rounded-full border border-[var(--border)] px-2.5 py-1 text-xs font-medium">
+                            <span className="rounded-full border border-[var(--border)] px-2.5 py-1 text-xs font-medium">
                                 Votre commentaire
                             </span>
                             {DeleteComButton(ComData.id)}
                         </div>
                     )}
-                    <time className="text-muted text-sm" dateTime={ComData.createdAt}>
+                    <time className="text-sm" dateTime={ComData.createdAt}>
                         {date}
                     </time>
                 </div>

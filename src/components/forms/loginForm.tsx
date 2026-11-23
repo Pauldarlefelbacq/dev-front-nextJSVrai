@@ -2,6 +2,8 @@
 
 import { useActionState } from "react"
 import { Login, type LoginState } from "../../app/actions/auth"
+import { Spinner } from "../ui/spinner"
+import { Button } from "../ui/button"
 
 const initialState: LoginState = {}
 
@@ -41,9 +43,9 @@ export function LoginForm(){
                             {state.error}
                         </p>
                     )}
-                    <button className="button-primary" disabled={pending} type="submit">
-                        {pending ? "Connexion..." : "Se connecter"}
-                    </button>
+                    <Button disabled={pending} type="submit">
+                        {pending ? <><Spinner />Connexion...</> : "Se connecter"}
+                    </Button>
                 </form>
                 <div>
                     <p>Pas encore de compte ?</p>

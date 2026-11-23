@@ -20,8 +20,8 @@ export async function createDrop(_prev: { fields?: string }, formData: FormData)
             lat: Number(formData.get('lat')),
             lng: Number(formData.get('lng')),
         })
-    } catch (err: ErrorResponse) {
-        if (err instanceof ApiError) return { fields: err.fields.title }
+    } catch (err: any) {
+        if (err) return { fields: err.error.fields.title }
         throw err
     }
 
@@ -58,7 +58,7 @@ export async function EditDrop(dropId: number, _prev: EditDropState, formData: F
 export async function deleteDrop(dropId: number){
     await requireSession()
     try{
-        await apiDelete(`/drops${dropId}`)
+        await apiDelete(`/drops/${dropId}`)
     }catch(err){
         if (err instanceof ApiError) return { fields: err.message} //remplacer par la vraie erreur mais long
         throw err

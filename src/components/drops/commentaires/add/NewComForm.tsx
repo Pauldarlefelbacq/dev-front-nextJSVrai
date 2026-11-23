@@ -2,6 +2,8 @@
 
 import { useActionState } from "react"
 import { createCom } from "@/app/actions/drops"
+import { Spinner } from "@/components/ui/spinner"
+import { Button } from "@/components/ui/button"
 
 export function newComForm({ dropId }: { dropId: number }){
     const [state, action, pending] = useActionState(createCom.bind(null, dropId), {})
@@ -20,9 +22,9 @@ export function newComForm({ dropId }: { dropId: number }){
             </label>
             {state.error && <p className="form-error mb-0" role="alert">{state.error}</p>}
             {state.success && <p className="text-muted mb-0" role="status">{state.success}</p>}
-            <button className=" justify-self-start" type="submit" disabled={pending}>
-                {pending ? "Envoi…" : "Envoyer le commentaire"}
-            </button>
+            <Button className=" justify-self-start" type="submit" disabled={pending}>
+                {pending ? <><Spinner />Envoi…</> : "Envoyer le commentaire"}
+            </Button>
         </form>
     )
 }

@@ -29,7 +29,7 @@ async function LogoutControl() {
   if (!isSignedUp) return null;
 
   return (
-    <form action={logout} method="get">
+    <form action={logout}>
       <button type="submit">logout</button>
     </form>
   );
@@ -53,7 +53,9 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             </Suspense>
           </nav>
         </header>
-        {children}
+        <Suspense fallback={<main className="page-container"><p className="text-muted">Chargement…</p></main>}>
+          {children}
+        </Suspense>
       </body>
     </html>
   );
