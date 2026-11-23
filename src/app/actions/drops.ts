@@ -20,8 +20,8 @@ export async function createDrop(_prev: { fields?: string }, formData: FormData)
             lat: Number(formData.get('lat')),
             lng: Number(formData.get('lng')),
         })
-    } catch (err: ErrorResponse) {
-        if (err instanceof ApiError) return { fields: err.fields.title }
+    } catch (err: any) {
+        if (err) return { fields: err.error.fields.title }
         throw err
     }
 
