@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useGeolocalisation } from "@/lib/use-geolocalisation";
+import { Spinner } from "../ui/spinner";
+import { Button } from "../ui/button";
 
 export function LocationField(){
     const { status, coords, locate } = useGeolocalisation()
@@ -22,10 +24,10 @@ export function LocationField(){
             onChange={(e)=> setLat(e.target.value)} />
             <input name="lng" value={lng} 
             onChange={(e)=> setLng(e.target.value)} />
-            <button type="button" onClick={locate}
+            <Button type="button" onClick={locate}
                 disabled={status === "loading"}>
-                 {status === "loading" ? "Locating..." : "Utiliser ma localisation"}
-            </button>
+                 {status === "loading" ? <><Spinner />Locating...</> : "Utiliser ma localisation"}
+            </Button>
             {
                 status === "denied" && 
                 <p>Permission non accordée à la localisation, entrer les coordonnées manuellement</p>
