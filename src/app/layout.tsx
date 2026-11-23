@@ -5,6 +5,7 @@ import "./globals.css";
 import { logout } from "./actions/auth";
 import { cookies } from "next/headers";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 const jetbrainsMono = JetBrains_Mono({subsets:['latin'],variable:'--font-mono'});
 
@@ -30,7 +31,12 @@ async function LogoutControl() {
 
   return (
     <form action={logout}>
-      <button type="submit">logout</button>
+      <button
+        className="rounded-full bg-brand-secondary px-3 py-2 text-sm font-semibold text-brand-main transition-colors hover:bg-brand-tertiary"
+        type="submit"
+      >
+        logout
+      </button>
     </form>
   );
 }
@@ -42,11 +48,11 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
       className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-mono", jetbrainsMono.variable)}
     >
       <body className="min-h-full flex flex-col">
-        <header>
-          <nav>
-            <ul>
-              <li><a href="/">Accueil</a></li>
-              <li><a href="/drops">Drops</a></li>
+        <header className="border-b-4 border-brand-tertiary bg-brand-main text-white">
+          <nav className="mx-auto flex w-full max-w-5xl items-center justify-between gap-4 px-4 py-3">
+            <ul className="flex items-center gap-5">
+              <li><Link className="font-semibold transition-colors hover:text-brand-secondary" href="/">Accueil</Link></li>
+              <li><Link className="font-semibold transition-colors hover:text-brand-secondary" href="/drops">Drops</Link></li>
             </ul>
             <Suspense fallback={null}>
               <LogoutControl />

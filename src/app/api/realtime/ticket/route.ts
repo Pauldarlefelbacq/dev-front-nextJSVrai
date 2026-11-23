@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
-import { requireSession } from "@/lib/session";
+import { getToken } from "@/lib/session";
 
 export async function POST(){
-    const token = await requireSession()
+    const token = await getToken()
     if (!token) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
     const res = await fetch(process.env.API_URL + '/realtime/ticket', {
         method: 'POST',
-        headers: { Authorization: 'Bearer' + token },
+        headers: { Authorization: 'Bearer ' + token },
         cache: 'no-store',
     });
     const data = await res.json();
