@@ -1,11 +1,13 @@
 'use client'
 
-import { useActionState } from "react"
+import { useActionState, useState } from "react"
 import { createDrop } from "@/app/actions/drops"
 import type { Category } from "@/lib/api/types"
+import { LocationField } from "@/components/drops/LocationField"
 
-export function newDropForm({categories}: {categories: Category[]}){
-    const [, action, pending] = useActionState(createDrop, {})
+export function NewDropForm({categories}: {categories: Category[]}){
+    const [state, action, pending] = useActionState(createDrop, { fields: undefined })
+    const [locationOption, setLocationOption] = useState<"manual" | "geolocation">("manual")
     
     return(
         <main className="page-container">
@@ -35,16 +37,42 @@ export function newDropForm({categories}: {categories: Category[]}){
                     URL de l'image
                         <input className="form-input" type="url" name="imageUrl" />
                     </label>
-                    <fieldset className="grid gap-4 sm:grid-cols-2">
+                    <fieldset className="grid gap-4">
                         <legend className="mb-2 text-sm font-medium">Position</legend>
-                        <label className="form-field">
-                    Latitude
-                            <input className="form-input" type="number" name="lat" step="any" required />
+                        <label className="flex items-center gap-2">
+                            <input
+                                type="radio"
+                                name="locationOption"
+                                value="manual"
+                                checked={locationOption === "manual"}
+                                onChange={() => setLocationOption("manual")}
+                            />
+                            Saisir les coordonnées
                         </label>
-                        <label className="form-field">
-                    Longitude
-                            <input className="form-input" type="number" name="lng" step="any" required />
+                        <label className="flex items-center gap-2">
+                            <input
+                                type="radio"
+                                name="locationOption"
+                                value="geolocation"
+                                checked={locationOption === "geolocation"}
+                                onChange={() => setLocationOption("geolocation")}
+                            />
+                            Utiliser ma localisation
                         </label>
+                        {locationOption === "manual" ? (
+                            <div className="grid gap-4 sm:grid-cols-2">
+                                <label className="form-field">
+                                    Latitude
+                                    <input className="form-input" type="number" name="lat" step="any" required />
+                                </label>
+                                <label className="form-field">
+                                    Longitude
+                                    <input className="form-input" type="number" name="lng" step="any" required />
+                                </label>
+                            </div>
+                        ) : (
+                            <LocationField />
+                        )}
                         <p className="text-muted mb-0 text-sm sm:col-span-2">
                             Le drop doit se trouver à moins de 3 km du département MMI.
                         </p>

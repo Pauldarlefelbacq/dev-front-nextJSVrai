@@ -1,4 +1,4 @@
-import { newDropForm as NewDropForm } from "@/components/drops/add/NewDropForm"
+import { NewDropForm } from "@/components/drops/add/NewDropForm"
 import { apiGet } from "@/lib/api/client"
 import { Category } from "@/lib/api/types"
 

@@ -1,10 +1,10 @@
 'use client'
 
 import { useEffect, useState } from "react";
-// import geolocation
+import { useGeolocalisation } from "@/lib/use-geolocalisation";
 
 export function LocationField(){
-    // const { status, coords, locate } = 
+    const { status, coords, locate } = useGeolocalisation()
     const [lat, setLat] = useState('')
     const [lng, setLng] = useState('')
     
@@ -14,6 +14,7 @@ export function LocationField(){
             setLng(coords.lng.toFixed(6))
         }
     }, [coords]);
+    
 
     return(
         <div>
@@ -22,7 +23,8 @@ export function LocationField(){
             <input name="lng" value={lng} 
             onChange={(e)=> setLng(e.target.value)} />
             <button type="button" onClick={locate}
-            disabled={status === "loading" ? "Locating..." : "Utiliser ma localisation"}>
+                disabled={status === "loading"}>
+                 {status === "loading" ? "Locating..." : "Utiliser ma localisation"}
             </button>
             {
                 status === "denied" && 

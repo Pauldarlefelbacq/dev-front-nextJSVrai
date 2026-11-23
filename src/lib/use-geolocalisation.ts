@@ -3,7 +3,7 @@ import { useCallback, useState } from "react";
 type Status = "idle" | "loading" | "success" | "denied" | "unavailable" | "error";
 type Coords = { lat: number, lng: number };
 
-export function useGeoloalisation(){
+export function useGeolocalisation(){
     const [status, setStatus] = useState<Status>("idle");
     const [coords, setCoords] = useState<Coords | null>(null);
     const locate = useCallback(()=>{
