@@ -54,7 +54,7 @@ export async function apiPatch<T>(path:string, data?: object){
     return res as T
 }
 
-export async function apiDelete<T>(path: string){
+export async function apiDelete(path: string): Promise<void>{
     const token = (await cookies()).get('session')?.value
     await requireSession()
     const res = await fetch(`${process.env.API_URL}${path}`, {
@@ -65,6 +65,4 @@ export async function apiDelete<T>(path: string){
     if (res.status === 404) notFound();
 
     if (!res.ok) throw new Error(`API ${res.status} sur ${path}`);
-    
-    return (await res.json()) as T
 }
