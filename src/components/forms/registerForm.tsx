@@ -2,6 +2,8 @@
 
 import { useActionState } from "react"
 import { Signup } from "@/app/actions/auth"
+import { Button } from "../ui/button"
+import { Spinner } from "../ui/spinner"
 
 export function RegisterForm(){
     const [state, action, pending] = useActionState(Signup, {})
@@ -38,7 +40,7 @@ export function RegisterForm(){
                             {state.error}
                         </p>
                     )}
-                    <button type="submit" disabled={pending}>S'inscrire</button>
+                    <Button type="submit" disabled={pending}>{pending ? <><Spinner />Inscription...</> :"S'inscrire"}</Button>
                 </form>
             </section>
         </main>

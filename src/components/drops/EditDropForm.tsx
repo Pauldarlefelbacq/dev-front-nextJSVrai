@@ -3,6 +3,8 @@
 import { useActionState } from "react"
 import { EditDrop } from "@/app/actions/drops"
 import type { Category, Drop } from "@/lib/api/types"
+import { Button } from "../ui/button"
+import { Spinner } from "../ui/spinner"
 
 type Props = {
     drop: Drop
@@ -82,9 +84,9 @@ export function EditDropForm({ drop, categories }: Props) {
                         </label>
                     </fieldset>
                     {state.error && <p className="form-error" role="alert">{state.error}</p>}
-                    <button className="button-primary justify-self-start" type="submit" disabled={pending}>
-                        {pending ? "Enregistrement…" : "Enregistrer"}
-                    </button>
+                    <Button type="submit" disabled={pending}>
+                        {pending ? <><Spinner />Enregistrement…</> : "Enregistrer"}
+                    </Button>
                 </form>
             </section>
         </main>

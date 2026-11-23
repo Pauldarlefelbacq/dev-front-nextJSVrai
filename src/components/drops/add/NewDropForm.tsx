@@ -4,6 +4,8 @@ import { useActionState, useState } from "react"
 import { createDrop } from "@/app/actions/drops"
 import type { Category } from "@/lib/api/types"
 import { LocationField } from "@/components/drops/LocationField"
+import { Spinner } from "@/components/ui/spinner"
+import { Button } from "@/components/ui/button"
 
 export function NewDropForm({categories}: {categories: Category[]}){
     const [state, action, pending] = useActionState(createDrop, { fields: undefined })
@@ -77,9 +79,9 @@ export function NewDropForm({categories}: {categories: Category[]}){
                             Le drop doit se trouver à moins de 3 km du département MMI.
                         </p>
                     </fieldset>
-                    <button className="button-primary justify-self-start" type="submit" disabled={pending}>
-                        {pending ? "Création…" : "Créer le drop"}
-                    </button>
+                    <Button type="submit" disabled={pending}>
+                        {pending ? <><Spinner /> Création…</> : "Créer le drop"}
+                    </Button>
                 </form>
             </section>
         </main>
