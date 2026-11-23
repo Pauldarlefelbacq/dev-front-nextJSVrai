@@ -1,6 +1,6 @@
 import { apiGet } from "@/lib/api/client";
 import { DropPage } from "@/lib/api/types";
-import { dropComponent as DropComponent } from "./DropComponent";
+import { DropCard } from "./DropCard";
 import { SearchParams } from "next/dist/server/request/search-params";
 import { Suspense } from "react";
 
@@ -26,7 +26,7 @@ export async function DropsList({ searchParams } : {searchParams: Promise<Search
                         <p>Aucun drop n'est disponible</p>
                         ):(
                             dropsList.items.map(drop =>(
-                              <DropComponent key={drop.id} dropData={drop} />
+                              <DropCard key={drop.id} dropData={drop} />
                             ))
                         )
                     }
