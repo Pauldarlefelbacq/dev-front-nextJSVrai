@@ -57,7 +57,7 @@ export default async function dropPage({ params }: { params: { id: string } }) {
             </p>
             <LikeButton dropId={drop.id} isLiked={drop.likedByMe} likeCount={drop.likesCount} />
           </div>
-          {/* <DeleteDropButton dropId={drop.id} /> */}
+          {drop.isMine && <DeleteDropButton dropId={drop.id} />}
         </div>
       </article>
       <section className="mt-8 grid gap-4">
