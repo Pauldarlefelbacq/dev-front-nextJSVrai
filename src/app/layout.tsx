@@ -7,6 +7,8 @@ import { cookies } from "next/headers";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { OnlineWidget } from "@/components/OnlineWidget";
+import { Toaster } from "@/components/ui/toast";
+import { NotificationWidget } from "@/components/NotificationWidget";
 
 const jetbrainsMono = JetBrains_Mono({subsets:['latin'],variable:'--font-mono'});
 
@@ -66,6 +68,8 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         </header>
         <Suspense fallback={<main className="page-container"><p className="text-muted">Chargement…</p></main>}>
           {children}
+          <NotificationWidget />
+          <Toaster />
         </Suspense>
       </body>
     </html>
