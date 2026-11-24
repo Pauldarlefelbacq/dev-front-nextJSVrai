@@ -7,6 +7,10 @@ import { CommentPage } from "../api/types";
 export function useCommentUpdated({ dropId}: { dropId: number }, {dropComs} : { dropComs: CommentPage }){
     const [comments, setComments] = useState<CommentPage>(dropComs);
 
+    useEffect(() => {
+        setComments(dropComs);
+    }, [dropComs]);
+
     useEffect(()=>{
         const release = retain();
         const stopComAdded = subscribe('comment:created', (data)=>{

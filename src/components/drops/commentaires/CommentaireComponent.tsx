@@ -3,7 +3,6 @@
 import { useActionState, useEffect, useState } from "react"
 import { createReply, getComReplies, toggleComLike } from "@/app/actions/drops"
 import type { Comment } from "@/lib/api/types"
-import { subscribe } from "@/lib/realtime"
 import { DeleteComButton } from "../DeleteComButton"
 
 function ComLikeButton({ comment }: { comment: Comment }){
@@ -12,7 +11,7 @@ function ComLikeButton({ comment }: { comment: Comment }){
         likesCount: comment.likesCount,
     })
     const [likeState, likeAction, likePending] = useActionState(
-        toggleComLike.bind(null, comment.id, reaction.liked),
+        toggleComLike.bind(null, comment.id, reaction.liked, reaction.likesCount),
         {},
     )
 
@@ -20,11 +19,11 @@ function ComLikeButton({ comment }: { comment: Comment }){
         setReaction({ liked: comment.likedByMe, likesCount: comment.likesCount })
     }, [comment.likedByMe, comment.likesCount])
 
-    useEffect(() => subscribe("comment:updated", (data) => {
-        if (data.comment.id === comment.id) {
-            setReaction({ liked: data.comment.likedByMe, likesCount: data.comment.likesCount })
+    useEffect(() => {
+        if (likeState.liked !== undefined && likeState.likesCount !== undefined) {
+            setReaction({ liked: likeState.liked, likesCount: likeState.likesCount })
         }
-    }), [comment.id])
+    }, [likeState.liked, likeState.likesCount])
 
     return(
         <form action={likeAction}>
@@ -41,7 +40,7 @@ function ComLikeButton({ comment }: { comment: Comment }){
     )
 }
 
-export function ComComponent({ comment: ComData, isReply = false }: { comment: Comment, isReply?: boolean }){
+export function ComComponent({ comment: ComData, isReply = false, onDeleted }: { comment: Comment, isReply?: boolean, onDeleted?: () => void }){
     const rootId = ComData.parentId ?? ComData.id
     const [replies, setReplies] = useState<Comment[]>([])
     const [repliesCount, setRepliesCount] = useState(ComData.repliesCount)
@@ -116,7 +115,7 @@ export function ComComponent({ comment: ComData, isReply = false }: { comment: C
                             <span className="rounded-full border border-border bg-accent px-2.5 py-1 text-xs font-medium text-accent-foreground">
                                 Votre commentaire
                             </span>
-                            {DeleteComButton(ComData.id)}
+                            <DeleteComButton comId={ComData.id} dropId={ComData.dropId} onDeleted={onDeleted} />
                         </div>
                     )}
                     <time className="text-sm text-muted-foreground" dateTime={ComData.createdAt}>
@@ -159,7 +158,15 @@ export function ComComponent({ comment: ComData, isReply = false }: { comment: C
                 <div className="mt-3 grid gap-2">
                     {repliesLoading && replies.length === 0 && <p className="text-sm text-muted-foreground">Chargement…</p>}
                     {replies.map((reply) => (
-                        <ComComponent key={reply.id} comment={reply} isReply />
+                        <ComComponent
+                            key={reply.id}
+                            comment={reply}
+                            isReply
+                            onDeleted={() => {
+                                setReplies((s) => s.filter((item) => item.id !== reply.id))
+                                setRepliesCount((s) => Math.max(0, s - 1))
+                            }}
+                        />
                     ))}
                     {repliesError && <p className="form-error mb-0" role="alert">{repliesError}</p>}
                     {replyPage < totalPages && (
