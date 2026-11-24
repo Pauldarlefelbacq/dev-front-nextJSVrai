@@ -6,6 +6,7 @@ import { CategoriesFilter } from "@/components/FilterComponent"
 import { cookies } from "next/headers"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { DropsExplorer } from "@/components/drops/DropsExplorer"
 
 
 export default async function DropPage({ searchParams } : {searchParams: Promise<SearchParams>}){

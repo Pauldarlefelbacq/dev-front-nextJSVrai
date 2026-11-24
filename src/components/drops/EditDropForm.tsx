@@ -1,11 +1,13 @@
 "use client"
 
-import { useActionState } from "react"
+import { useActionState, useState } from "react"
 import { EditDrop } from "@/app/actions/drops"
 import type { Category, Drop } from "@/lib/api/types"
 import { Button } from "../ui/button"
 import { Spinner } from "../ui/spinner"
 import { FieldError } from "../forms/FieldError"
+import { DropsMap } from "../map/DropsMap"
+
 
 type Props = {
     drop: Drop
@@ -14,6 +16,8 @@ type Props = {
 
 export function EditDropForm({ drop, categories }: Props) {
     const [state, action, pending] = useActionState(EditDrop.bind(null, drop.id), {})
+    const [location, setLocation] = useState({ lat: "", lng: "" })
+    
 
     return (
         <main className="page-container">
@@ -73,38 +77,20 @@ export function EditDropForm({ drop, categories }: Props) {
                         />
                         <FieldError id="edit-image-error" messages={state.fields?.imageUrl} />
                     </label>
-                    <fieldset className="grid gap-4 sm:grid-cols-2">
-                        <legend className="mb-2 text-sm font-medium">Position</legend>
-                        <label className="form-field">
-                            Latitude
-                            <input
-                                className="form-input"
-                                type="number"
-                                name="lat"
-                                step="any"
-                                defaultValue={drop.location.lat}
-                                aria-invalid={Boolean(state.fields?.lat?.length)}
-                                aria-describedby={state.fields?.lat?.length ? "edit-lat-error" : undefined}
-                                required
-                            />
-                            <FieldError id="edit-lat-error" messages={state.fields?.lat} />
-                        </label>
-                        <label className="form-field">
-                            Longitude
-                            <input
-                                className="form-input"
-                                type="number"
-                                name="lng"
-                                step="any"
-                                defaultValue={drop.location.lng}
-                                aria-invalid={Boolean(state.fields?.lng?.length)}
-                                aria-describedby={state.fields?.lng?.length ? "edit-lng-error" : undefined}
-                                required
-                            />
-                            <FieldError id="edit-lng-error" messages={state.fields?.lng} />
-                        </label>
-                        <FieldError id="edit-location-error" messages={state.fields?.location} />
-                    </fieldset>
+                    <div className="w-fill h-80">
+                        <DropsMap
+                            drops={[drop]}
+                            activeId={null}
+                            LocationSelect={(lat, lng) => {
+                                setLocation({ lat: String(lat), lng: String(lng) })
+                            }}
+                        />
+                        <span className="hidden">
+                            <input type="number" name="lat" value={location.lat} />
+                            <input type="number" name="lng" value={location.lng} />
+                        </span>
+
+                    </div>
                     {state.error && <p className="form-error" role="alert">{state.error}</p>}
                     <Button type="submit" disabled={pending}>
                         {pending ? <><Spinner />Enregistrement…</> : "Enregistrer"}

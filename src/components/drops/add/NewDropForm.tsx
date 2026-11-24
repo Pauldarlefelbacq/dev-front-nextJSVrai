@@ -2,15 +2,19 @@
 
 import { useActionState, useState } from "react"
 import { createDrop } from "@/app/actions/drops"
-import type { Category } from "@/lib/api/types"
+import type { Category, Drop } from "@/lib/api/types"
 import { LocationField } from "@/components/drops/LocationField"
 import { Spinner } from "@/components/ui/spinner"
 import { Button } from "@/components/ui/button"
 import { FieldError } from "@/components/forms/FieldError"
+import { DropsMap } from "@/components/map/DropsMap"
+
+const EMPTY_DROPS: Drop[] = [] // contournement du fonctionnement naturel de la map
 
 export function NewDropForm({categories}: {categories: Category[]}){
     const [state, action, pending] = useActionState(createDrop, {})
     const [locationOption, setLocationOption] = useState<"manual" | "geolocation">("manual")
+    const [location, setLocation] = useState({ lat: "", lng: "" })
     const hasLocationError = Boolean(state.fields?.location?.length)
     
     return(
@@ -87,41 +91,19 @@ export function NewDropForm({categories}: {categories: Category[]}){
                             Utiliser ma localisation
                         </label>
                         {locationOption === "manual" ? (
-                            <div className="grid gap-4 sm:grid-cols-2">
-                                <label className="form-field">
-                                    Latitude
-                                    <input className="form-input" type="number" name="lat" step="any"
-                                        aria-invalid={Boolean(state.fields?.lat?.length || hasLocationError)}
-                                        aria-describedby={
-                                            state.fields?.lat?.length && hasLocationError
-                                                ? "drop-lat-error drop-location-error"
-                                                : state.fields?.lat?.length
-                                                    ? "drop-lat-error"
-                                                    : hasLocationError
-                                                        ? "drop-location-error"
-                                                        : undefined
-                                        }
-                                        required
-                                    />
-                                    <FieldError id="drop-lat-error" messages={state.fields?.lat} />
-                                </label>
-                                <label className="form-field">
-                                    Longitude
-                                    <input className="form-input" type="number" name="lng" step="any"
-                                        aria-invalid={Boolean(state.fields?.lng?.length || hasLocationError)}
-                                        aria-describedby={
-                                            state.fields?.lng?.length && hasLocationError
-                                                ? "drop-lng-error drop-location-error"
-                                                : state.fields?.lng?.length
-                                                    ? "drop-lng-error"
-                                                    : hasLocationError
-                                                        ? "drop-location-error"
-                                                        : undefined
-                                        }
-                                        required
-                                    />
-                                    <FieldError id="drop-lng-error" messages={state.fields?.lng} />
-                                </label>
+                            <div className="w-fill h-80">
+                                <DropsMap
+                                    drops={EMPTY_DROPS}
+                                    activeId={null}
+                                    LocationSelect={(lat, lng) => {
+                                        setLocation({ lat: String(lat), lng: String(lng) })
+                                    }}
+                                />
+                            <span className="hidden">
+                                <input type="number" name="lat" value={location.lat} />
+                                <input type="number" name="lng" value={location.lng} />
+                            </span>
+
                             </div>
                         ) : (
                             <LocationField />
