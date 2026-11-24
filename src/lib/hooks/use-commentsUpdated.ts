@@ -23,7 +23,7 @@ export function useCommentUpdated({ dropId}: { dropId: number }, {dropComs} : { 
          
                 setComments((s) => ({
                     ...s,
-                    items: s.items.filter((com) => com.id !== data.commentId),
+                    items: s.items.filter((com) => com.id !== data.commentId),  
                 }));
             }
         });

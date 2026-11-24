@@ -3,6 +3,7 @@ import { DropPage } from "@/lib/api/types";
 import { DropCard } from "./DropCard";
 import { SearchParams } from "next/dist/server/request/search-params";
 import { Suspense } from "react";
+import { DropsLiveWidget } from "./DropsLiveWidget";
 
 export async function DropsList({ searchParams } : {searchParams: Promise<SearchParams>}){
     const params = await searchParams;
@@ -19,19 +20,6 @@ export async function DropsList({ searchParams } : {searchParams: Promise<Search
     const dropsList = await apiGet<DropPage>(`/drops${query ? `?${query}` : ""}`);
 
     return(
-        <Suspense>
-            <div>
-                <ul className="*:my-2">
-                    {dropsList.items.length === 0 ? (
-                        <p>Aucun drop n'est disponible</p>
-                        ):(
-                            dropsList.items.map(drop =>(
-                              <DropCard key={drop.id} dropData={drop} />
-                            ))
-                        )
-                    }
-                </ul>
-            </div>
-        </Suspense>
+        <DropsLiveWidget drops={dropsList} />
     )
 }
