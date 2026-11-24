@@ -14,12 +14,7 @@ export function useOnline(){
             "hello",
             (data: { online?: Viewer[] }) => setViewers(Array.isArray(data?.online) ? data.online : []),
         )
-        const stopOnline = subscribe(
-            "presence:online",
-            (data: { viewers: Viewer[] }) => setViewers(data.viewers),
-        )
         return()=>{
-            stopOnline()
             stopHello();
             release();
             setViewers([]);
