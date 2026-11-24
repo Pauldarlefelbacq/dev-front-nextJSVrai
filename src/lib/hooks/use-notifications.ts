@@ -13,7 +13,6 @@ export function useNotifications(){
         const release = retain();
         const stopDropUpdated = subscribe('notification', (data)=>{
             setNotifs(data);
-            console.log(data);
             
         })
         return()=>{
