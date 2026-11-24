@@ -110,7 +110,7 @@ export function NewDropForm({categories}: {categories: Category[]}){
                         )}
                         <FieldError id="drop-location-error" messages={state.fields?.location} />
                         <p className="text-muted mb-0 text-sm sm:col-span-2">
-                            Le drop doit se trouver à moins de 3 km du département MMI.
+                            La latitude doit être comprise entre -90 et 90, et la longitude entre -180 et 180.
                         </p>
                     </fieldset>
                     {state.error && <p className="form-error mb-0" role="alert">{state.error}</p>}

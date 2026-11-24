@@ -13,7 +13,7 @@ export function ComsLiveWidget({dropId, dropComs}: {dropId: number, dropComs: Co
             <div>
                 <ul className="*:my-2">
                     {coms.items.map((com)=>(
-                        <ComComponent key={com.id} {...com} />
+                        <ComComponent key={com.id} comment={com} />
                     ))}
                 </ul>
             </div>

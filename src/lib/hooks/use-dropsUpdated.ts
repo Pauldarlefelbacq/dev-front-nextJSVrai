@@ -7,13 +7,22 @@ import { Drop, DropPage } from "../api/types";
 export function useDropsUpdated(drops: DropPage){
     const [dropsLive, setDropsLive] = useState<DropPage>(drops)
 
+    useEffect(() => {
+        setDropsLive(drops)
+    }, [drops])
+
     useEffect(()=>{
         const release = retain();
         const stopDropAdded = subscribe('drop:created', (data: { drop: Drop }) => {
-            setDropsLive((s)=>({
-                ...s,
-                items: [...s.items, data.drop],
-            }))
+            setDropsLive((s) => {
+                if (s.items.some((drop) => drop.id === data.drop.id)) return s
+
+                return {
+                    ...s,
+                    items: [data.drop, ...s.items],
+                    total: s.total + 1,
+                }
+            })
         });
         const stopDropUpdated = subscribe('drop:updated', (data: { drop: Drop }) => {
             setDropsLive((s)=>({

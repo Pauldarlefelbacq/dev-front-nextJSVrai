@@ -100,10 +100,13 @@ Access: **public**, **token?** (token optional: fills `likedByMe`, `isMine`…),
 | `GET /drops/{id}` | token? | 200 `Drop` | `404` if missing, or hidden and not yours |
 | `PATCH /drops/{id}` | token | 200 `Drop` | author only (`403` otherwise) |
 | `DELETE /drops/{id}` | token | 204 | author only |
-| `POST /drops/{id}/like` | token | 200 `LikeState` | idempotent |
-| `DELETE /drops/{id}/like` | token | 200 `LikeState` | idempotent |
+| `POST`, `DELETE /drops/{id}/like` | token | 200 `LikeState` | idempotent; removes an opposite dislike |
+| `POST`, `DELETE /drops/{id}/dislike` | token | 200 `LikeState` | idempotent; removes an opposite like |
 | `GET /drops/{id}/comments` | token? | 200 `Page<Comment>` | oldest first |
-| `POST /drops/{id}/comments` | token | 201 `Comment` | content 1 to 500 chars |
+| `POST /drops/{id}/comments` | token | 201 `Comment` | content 1 to 500 chars; optional root `parentId` |
+| `GET /comments/{id}/replies` | token? | 200 `Page<Comment>` | root comments only; oldest first |
+| `POST`, `DELETE /comments/{id}/like` | token | 200 `CommentReactionState` | idempotent |
+| `POST`, `DELETE /comments/{id}/dislike` | token | 200 `CommentReactionState` | idempotent |
 | `DELETE /comments/{id}` | token | 204 | comment author only |
 | `POST /drops/{id}/report` | token | 202 `{ reported: true }` | `403` on your own drop |
 
@@ -118,13 +121,13 @@ Access: **public**, **token?** (token optional: fills `likedByMe`, `isMine`…),
 | Update account | `displayName?` (1 to 40), `bio?` (≤ 280, nullable), `avatarUrl?` (≤ 500, nullable) |
 | Create drop | `title` (3 to 80), `content` (1 to 1000), `category`, `imageUrl?` (≤ 500, nullable), `lat` (-90..90), `lng` (-180..180) |
 | Update drop | same fields, all optional, at least one. **`lat` and `lng` must be sent together** |
-| Comment | `content` (1 to 500) |
+| Comment | `content` (1 to 500), `parentId?` (root comment ID) |
 | Report | `reason` (`spam` \| `offensive` \| `personal_info` \| `other`), `details?` (≤ 300) |
 
 Business rules:
 
 - A drop of category **`photo` requires `imageUrl`**. There is no upload endpoint: the user provides an image URL.
-- **Location zone**: a drop must be within **3 km of the MMI department** (Montbéliard). This is on purpose, so nobody can drop near their home and reveal where they live. All coordinate errors (type, bounds, zone) come back under the key **`location`** in `fields`.
+- **Location**: there is no zone restriction. Latitude must be between -90 and 90 and longitude between -180 and 180. Coordinate errors are returned under **`location`** in `fields`.
 - Username and email are lowercased by the API.
 - Send only the fields that exist: extra fields cause a `422`.
 
@@ -172,26 +175,30 @@ export interface Profile extends PublicUser {
 export interface Drop {
   id: number;
   title: string;
-  content: string | null;            // can be null (e.g. locked drop)
+  content: string | null;
   category: Category;
   imageUrl: string | null;
-  location: { lat: number; lng: number; precision: "exact" | "approx" };
-  locked: boolean;
+  location: { lat: number; lng: number };
   hidden: boolean;                   // true only for the author of a hidden drop
   author: PublicUser;
   likesCount: number;
+  dislikesCount: number;
   commentsCount: number;
-  opensCount: number;
   likedByMe: boolean;                // false without token
-  openedByMe: boolean;               // false without token
+  dislikedByMe: boolean;             // false without token
   isMine: boolean;                   // false without token
   createdAt: string;
   updatedAt: string;
 }
 
-export interface Comment { id: number; dropId: number; content: string; author: PublicUser; isMine: boolean; createdAt: string }
+export interface Comment {
+  id: number; dropId: number; parentId: number | null; content: string;
+  author: PublicUser; isMine: boolean; deleted: boolean; repliesCount: number;
+  likesCount: number; dislikesCount: number; likedByMe: boolean;
+  dislikedByMe: boolean; createdAt: string;
+}
 export interface CategoryItem { id: Category; label: string }   // label is French, e.g. "Une énigme"
-export interface LikeState { liked: boolean; likesCount: number }
+export interface LikeState { liked: boolean; disliked: boolean; likesCount: number; dislikesCount: number }
 export interface Page<T> { items: T[]; page: number; pageSize: number; total: number; totalPages: number }
 export interface AuthResponse { user: PrivateUser; token: string; expiresAt: string }
 
@@ -213,15 +220,14 @@ Example drop (`GET /drops/{id}`):
   "content": "Derrière le bâtiment, à l'ombre. Idéal pour réviser.",
   "category": "tip",
   "imageUrl": null,
-  "location": { "lat": 47.49561, "lng": 6.80544, "precision": "exact" },
-  "locked": false,
+  "location": { "lat": 47.49561, "lng": 6.80544 },
   "hidden": false,
   "author": { "id": 3, "username": "lea", "displayName": "Léa", "avatarUrl": null },
   "likesCount": 4,
+  "dislikesCount": 0,
   "commentsCount": 2,
-  "opensCount": 0,
   "likedByMe": false,
-  "openedByMe": false,
+  "dislikedByMe": false,
   "isMine": false,
   "createdAt": "2026-11-16T09:12:00.000Z",
   "updatedAt": "2026-11-16T09:12:00.000Z"
@@ -231,10 +237,9 @@ Example drop (`GET /drops/{id}`):
 ### Field notes
 
 - **IDs are numbers.** Route params are strings: convert with `Number(id)` and handle `NaN`.
-- Location is nested: `drop.location.lat` / `drop.location.lng` when reading, but flat `lat` / `lng` when creating or updating. If `precision` is `"approx"`, do not show the drop as an exact point (e.g. show an approximate zone or a note).
+- Location is nested: `drop.location.lat` / `drop.location.lng` when reading, but flat `lat` / `lng` when creating or updating.
 - `imageUrl`, `avatarUrl`, `bio` and `content` can be `null`: always handle it and show a fallback.
 - `isMine` decides whether to show edit/delete buttons. The API still enforces permissions.
-- `locked`, `opensCount`, `openedByMe`: these exist on the drop, but **API v1.0.0 has no route to "open" a drop**. Display them if useful, but do not invent an open action.
 - `hidden` is only `true` for the author viewing their own hidden drop (others get a 404). Show a clear "this drop is hidden" notice to the author.
 - Display `author.displayName`; use `author.username` for links to `/users/{username}`.
 - Format dates with `Intl.DateTimeFormat("fr-FR", ...)`.
@@ -296,11 +301,11 @@ Never show raw stack traces. Use the API `message` (already in French) when it i
 
 - **Home**: paginated list of drops (`page`, `pageSize`) with search `q`, `category` filter and `sort` (`recent` / `popular`). Categories come from `GET /categories` (do not hardcode labels). Show a pager from `totalPages`.
 - **Map / geolocation**: use `navigator.geolocation` in a client component. Handle denied permission, timeout and unavailable with a clear message; the app must still work (fallback: drops list, or a default point near the MMI department). Ask for permission after a user action, not silently.
-- **Create drop**: form with title, content, category, optional image URL (required for `photo`) and a position. Validate the obvious rules client-side (lengths, `photo` needs `imageUrl`), but always display the API `fields` errors. Send `lat` and `lng` as **numbers**. Explain to the user that drops must be within 3 km of the school.
+- **Create drop**: form with title, content, category, optional image URL (required for `photo`) and a position. Validate the obvious rules client-side (lengths, `photo` needs `imageUrl`), but always display the API `fields` errors. Send `lat` and `lng` as **numbers**. There is no geographic zone restriction.
 - **Edit drop**: only for `isMine`. Send only changed fields, and `lat`+`lng` together.
 - **Delete drop / comment**: ask for confirmation. Drop: author only. Comment: author only.
-- **Likes**: update the UI immediately using the returned `LikeState`, revert on error, prevent double clicks. `POST` adds, `DELETE` removes (both idempotent). Logged-out users are invited to log in.
-- **Comments**: paginated, oldest first, form with 1 to 500 chars and a counter. Refresh after posting.
+- **Reactions**: one like or dislike per user on a drop or comment; choosing one removes the other. All reaction routes are idempotent.
+- **Comments**: paginated, oldest first, 1 to 500 chars. Support one-level replies using the root comment ID as `parentId`; a reply to a reply attaches to the root. A deleted root with replies remains as an anonymized trace until its last reply is removed.
 - **Report**: logged-in users only, never on their own drop (the API returns 403). Ask a reason (`spam`, `offensive`, `personal_info`, `other`) and optional details (≤ 300), then confirm with a message ("Merci, signalement envoyé").
 - **Profile** (`/users/[username]`): `Profile` info and stats, plus their drops via `GET /drops?author=<username>`.
 - **My account** (`/me`): show `PrivateUser`; edit `displayName`, `bio`, `avatarUrl`. Username and email cannot be changed.
