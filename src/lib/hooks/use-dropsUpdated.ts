@@ -14,7 +14,6 @@ export function useDropsUpdated(drops: DropPage){
                 ...s,
                 items: [...s.items, data.drop],
             }))
-            console.log(data);
         });
         const stopDropUpdated = subscribe('drop:updated', (data: { drop: Drop }) => {
             setDropsLive((s)=>({

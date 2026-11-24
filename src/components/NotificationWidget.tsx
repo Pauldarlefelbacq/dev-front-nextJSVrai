@@ -6,7 +6,6 @@ import { toast } from "./ui/toast"
 
 export function NotificationWidget(){
     let notif = useNotifications();
-    console.log(notif);
     
 
     useEffect(() => {
