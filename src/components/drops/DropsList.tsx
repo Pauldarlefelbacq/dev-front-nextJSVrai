@@ -1,9 +1,8 @@
 import { apiGet } from "@/lib/api/client";
 import { DropPage } from "@/lib/api/types";
-import { DropCard } from "./DropCard";
 import { SearchParams } from "next/dist/server/request/search-params";
-import { Suspense } from "react";
 import { DropsLiveWidget } from "./DropsLiveWidget";
+import { Pagination } from "@/components/Pagination";
 
 export async function DropsList({ searchParams } : {searchParams: Promise<SearchParams>}){
     const params = await searchParams;
@@ -15,11 +14,18 @@ export async function DropsList({ searchParams } : {searchParams: Promise<Search
     if (typeof params.category === "string" && params.category.trim()){
         apiParams.set("category", params.category.trim())
     }
+    const requestedPage = Number(params.page)
+    if (Number.isInteger(requestedPage) && requestedPage > 0) {
+        apiParams.set("page", String(requestedPage))
+    }
 
     const query = apiParams.toString()
     const dropsList = await apiGet<DropPage>(`/drops${query ? `?${query}` : ""}`);
 
     return(
-        <DropsLiveWidget drops={dropsList} />
+        <>
+            <DropsLiveWidget drops={dropsList} />
+            <Pagination page={dropsList.page} totalPages={dropsList.totalPages} />
+        </>
     )
 }

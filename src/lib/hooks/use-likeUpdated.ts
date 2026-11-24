@@ -9,7 +9,7 @@ export function useLikeUpdated(dropId: number, dropLikes: number){
     useEffect(()=>{
         const release = retain();
         const stopOpen = onOpen(()=> send( 'like:updated', { dropId }));
-        const stopLikeUpdated = subscribe('like:updated', (data)=>{
+        const stopLikeUpdated = subscribe('like:upddated', (data)=>{
             if (data.dropId === dropId) setLikes(data.likesCount)
         });
     return()=>{

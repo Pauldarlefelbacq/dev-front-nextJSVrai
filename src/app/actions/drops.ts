@@ -1,7 +1,7 @@
 'use server'
 
-import { apiDelete, apiPatch, apiPost, ApiError, toApiActionState, type ApiActionState } from "@/lib/api/client"
-import type { Drop } from "@/lib/api/types"
+import { apiDelete, apiGet, apiPatch, apiPost, ApiError, toApiActionState, type ApiActionState } from "@/lib/api/client"
+import type { Comment, CommentPage, Drop } from "@/lib/api/types"
 import { getToken, requireSession } from "@/lib/session"
 import { refresh, revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
@@ -83,6 +83,7 @@ export async function toggleLike(dropId: number, liked: boolean){
 
 export type ComFormState = ApiActionState & {
     success?: string
+    comment?: Comment
 }
 
 //      Comments
@@ -97,6 +98,42 @@ export async function createCom(dropId: number, _prev: ComFormState, formData: F
     }
     revalidatePath(`/drops/${dropId}`)
     return { success: "Commentaire envoyé." }
+}
+
+export async function createReply(dropId: number, parentId: number, _prev: ComFormState, formData: FormData): Promise<ComFormState>{
+    await requireSession();
+    let comment: Comment
+    try{
+        comment = await apiPost<Comment>(`/drops/${dropId}/comments`, {
+            content: formData.get('content'),
+            parentId,
+        })
+    } catch(err){
+        return toApiActionState(err)
+    }
+    revalidatePath(`/drops/${dropId}`)
+    return { success: "Réponse envoyée.", comment }
+}
+
+export async function getComReplies(commentId: number, page: number): Promise<CommentPage | ApiActionState>{
+    await requireSession();
+    try{
+        return await apiGet<CommentPage>(`/comments/${commentId}/replies?page=${page}`)
+    } catch(err){
+        return toApiActionState(err)
+    }
+}
+
+export async function toggleComLike(commentId: number, liked: boolean, _prev: ApiActionState): Promise<ApiActionState>{
+    await requireSession();
+    try{
+        if (liked) await apiDelete(`/comments/${commentId}/like`)
+        else await apiPost(`/comments/${commentId}/like`)
+    } catch(err){
+        return toApiActionState(err)
+    }
+    refresh()
+    return {}
 }
 
 export async function modifyCom(dropId: number){
