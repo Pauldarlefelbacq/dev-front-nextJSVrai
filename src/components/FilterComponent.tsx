@@ -9,7 +9,7 @@ export async function CategoriesFilter({ searchParams } : {searchParams: Promise
     const params = await searchParams;
     const activeCat = typeof params.category === "string" ? params.category : undefined
 
-    const categories = await apiGet<Category[]>("/categories")
+    const categories = await apiGet<Category[]>("/categories") || []
     const filterLinkClass = "rounded-full border px-3 py-1 text-sm transition-colors hover:bg-accent hover:text-accent-foreground"
     const inactiveClass = "border-border bg-card text-card-foreground"
     const activeClass = "border-transparent bg-secondary text-secondary-foreground"
