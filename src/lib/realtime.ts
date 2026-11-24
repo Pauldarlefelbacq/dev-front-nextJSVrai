@@ -13,6 +13,13 @@ let attempt = 0;
 let reconnectTimer: ReturnType<typeof setTimeout> | undefined;
 let closeTimer: ReturnType<typeof setTimeout> | undefined;
 
+function redirectToLogin() {
+    const path = window.location.pathname.replace(/\/$/, "");
+    if (path !== "/login" && path !== "/register") {
+        window.location.assign("/login");
+    }
+}
+
 function scheduleReconnect(){
     attempt += 1;
     reconnectTimer = setTimeout(connect,
@@ -26,7 +33,11 @@ async function connect(){
     try{
         const res = await fetch('/api/realtime/ticket',
             { method: 'POST' });
-        if (!res.ok) return;
+        if (res.status === 401) {
+            redirectToLogin();
+            return;
+        }
+        if (!res.ok) throw new Error(`Ticket request failed: ${res.status}`);
         const { url } = await res.json();
         if (consumers === 0 || socket) return;
         open(url);
@@ -50,6 +61,10 @@ function open(url: string){
     };
     ws.onclose = (event) => {
         if (socket === ws) socket = null;
+        if (event.code === 4001) {
+            redirectToLogin();
+            return;
+        }
         if (consumers === 0 || NO_RECONNECT.includes(event.code)) return;
         scheduleReconnect();
     };
