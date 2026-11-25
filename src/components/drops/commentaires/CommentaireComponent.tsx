@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState, useEffect, useState } from "react"
+import { useActionState, useEffect, useState, type Dispatch, type SetStateAction } from "react"
 import { createReply, getComReplies, toggleComLike } from "@/app/actions/drops"
 import type { Comment } from "@/lib/api/types"
 import { DeleteComButton } from "../DeleteComButton"
@@ -40,7 +40,47 @@ function ComLikeButton({ comment }: { comment: Comment }){
     )
 }
 
-export function ComComponent({ comment: ComData, isReply = false, onDeleted }: { comment: Comment, isReply?: boolean, onDeleted?: () => void }){
+function ComReplyForm({ dropId, parentId, setReplies, setRepliesCount, setShowReplies }: {
+    dropId: number
+    parentId: number
+    setReplies: Dispatch<SetStateAction<Comment[]>>
+    setRepliesCount: Dispatch<SetStateAction<number>>
+    setShowReplies: Dispatch<SetStateAction<boolean>>
+}){
+    const [state, action, pending] = useActionState(
+        createReply.bind(null, dropId, parentId),
+        {},
+    )
+
+    useEffect(() => {
+        const reply = state.comment
+        if (reply) {
+            setReplies((s) => [...s, reply])
+            setRepliesCount((s) => s + 1)
+            setShowReplies(true)
+        }
+    }, [state.comment, setReplies, setRepliesCount, setShowReplies])
+
+    return(
+        <form action={action} className="mt-3 grid gap-2">
+            <textarea
+                className="form-input min-h-20"
+                name="content"
+                minLength={1}
+                maxLength={500}
+                placeholder="Votre réponse…"
+                required
+            />
+            {state.error && <p className="form-error mb-0" role="alert">{state.error}</p>}
+            {state.success && <p className="text-muted mb-0" role="status">{state.success}</p>}
+            <button type="submit" className="cursor-pointer justify-self-start" disabled={pending}>
+                {pending ? "Envoi…" : "Envoyer la réponse"}
+            </button>
+        </form>
+    )
+}
+
+export function ComComponent({ comment: ComData, isReply = false, onReply, onDeleted }: { comment: Comment, isReply?: boolean, onReply?: () => void, onDeleted?: () => void }){
     const rootId = ComData.parentId ?? ComData.id
     const [replies, setReplies] = useState<Comment[]>([])
     const [repliesCount, setRepliesCount] = useState(ComData.repliesCount)
@@ -50,10 +90,6 @@ export function ComComponent({ comment: ComData, isReply = false, onDeleted }: {
     const [showReplyForm, setShowReplyForm] = useState(false)
     const [repliesLoading, setRepliesLoading] = useState(false)
     const [repliesError, setRepliesError] = useState("")
-    const [replyState, replyAction, replyPending] = useActionState(
-        createReply.bind(null, ComData.dropId, rootId),
-        {},
-    )
     const date = new Intl.DateTimeFormat("fr-FR", {
         dateStyle: "medium",
         timeStyle: "short",
@@ -62,15 +98,6 @@ export function ComComponent({ comment: ComData, isReply = false, onDeleted }: {
     useEffect(() => {
         setRepliesCount(ComData.repliesCount)
     }, [ComData.repliesCount])
-
-    useEffect(() => {
-        const reply = replyState.comment
-        if (reply) {
-            setReplies((s) => [...s, reply])
-            setRepliesCount((s) => s + 1)
-            setShowReplies(true)
-        }
-    }, [replyState.comment])
 
     async function loadReplies(page: number){
         setRepliesLoading(true)
@@ -147,8 +174,8 @@ export function ComComponent({ comment: ComData, isReply = false, onDeleted }: {
                     <button
                         type="button"
                         className="cursor-pointer text-sm text-muted-foreground"
-                        onClick={() => setShowReplyForm(!showReplyForm)}
-                        aria-expanded={showReplyForm}
+                        onClick={() => isReply ? onReply?.() : setShowReplyForm(!showReplyForm)}
+                        aria-expanded={isReply ? undefined : showReplyForm}
                     >
                         Répondre
                     </button>
@@ -162,6 +189,7 @@ export function ComComponent({ comment: ComData, isReply = false, onDeleted }: {
                             key={reply.id}
                             comment={reply}
                             isReply
+                            onReply={() => setShowReplyForm(true)}
                             onDeleted={() => {
                                 setReplies((s) => s.filter((item) => item.id !== reply.id))
                                 setRepliesCount((s) => Math.max(0, s - 1))
@@ -181,22 +209,14 @@ export function ComComponent({ comment: ComData, isReply = false, onDeleted }: {
                     )}
                 </div>
             )}
-            {showReplyForm && (
-                <form action={replyAction} className="mt-3 grid gap-2">
-                    <textarea
-                        className="form-input min-h-20"
-                        name="content"
-                        minLength={1}
-                        maxLength={500}
-                        placeholder="Votre réponse…"
-                        required
-                    />
-                    {replyState.error && <p className="form-error mb-0" role="alert">{replyState.error}</p>}
-                    {replyState.success && <p className="text-muted mb-0" role="status">{replyState.success}</p>}
-                    <button type="submit" className="cursor-pointer justify-self-start" disabled={replyPending}>
-                        {replyPending ? "Envoi…" : "Envoyer la réponse"}
-                    </button>
-                </form>
+            {showReplyForm && !isReply && (
+                <ComReplyForm
+                    dropId={ComData.dropId}
+                    parentId={rootId}
+                    setReplies={setReplies}
+                    setRepliesCount={setRepliesCount}
+                    setShowReplies={setShowReplies}
+                />
             )}
         </article>
     )
