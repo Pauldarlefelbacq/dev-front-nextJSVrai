@@ -36,6 +36,9 @@ export function UserInformations({ user }: { user: UserProfile }){
                 <p>{user.stats.commentsCount} Commentaires</p>
                 <p>{user.stats.likesReceived} Likes reçues</p>
             </div>
+            <div>
+                <p>Créé le {user.createdAt.split()}</p>
+            </div>
             <div className="card w-full p-5">
                 <h2 className="text-2xl font-bold">Drops</h2>
                 <Suspense fallback={<h2>Chargement des drops</h2>}>
