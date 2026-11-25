@@ -45,7 +45,7 @@ export default async function dropPage({ params }: { params: { id: string } }) {
             <div className="mt-8 flex flex-wrap items-center justify-between gap-4 border-t border-border pt-5 text-sm text-muted-foreground">
               <div className="flex flex-col gap-1">
                 <Link
-                  href={`/users/${drop.author.username}`}
+                  href={`/user/${drop.author.username}`}
                   className="font-medium text-foreground hover:underline"
                 >
                   {drop.author.displayName}

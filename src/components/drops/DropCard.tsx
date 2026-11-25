@@ -34,8 +34,8 @@ export function DropCard({ dropData }: { dropData: Drop }) {
                 </CardAction>
                 <CardDescription>
                     Par{" "}
-                    <Link className="transition-colors hover:text-brand-secondary hover:underline" href={`/users/${dropData.author.username}`}>
-                        {dropData.author.displayName}
+                    <Link className="transition-colors hover:text-brand-secondary hover:underline" href={`/user/${dropData.author.username}`}>
+                        {dropData.author.username}
                     </Link>
                 </CardDescription>
             </CardHeader>
