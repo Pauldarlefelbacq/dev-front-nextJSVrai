@@ -11,14 +11,14 @@ export function LikeButton({ dropId, isLiked, likeCount}: { dropId: number, isLi
     )
 
     const [state, action, pending] = useActionState(async()=> {
-        setOptimisticLike
+        setOptimisticLike(!optimisticLike.isLiked)
         return toggleLike(dropId, isLiked)
     }, {})
 
     return(
         <form action={action}>
             <button className="cursor-pointer" disabled={pending} aria-pressed={optimisticLike.isLiked}>
-                {optimisticLike.isLiked ? '❤︎' : '♡'}
+                {optimisticLike.isLiked ? '❤︎' : '♡'} {optimisticLike.likeCount}
             </button>
             {state.error && <p role="alert">{state.error}</p>}
         </form>

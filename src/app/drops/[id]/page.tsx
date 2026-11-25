@@ -57,9 +57,6 @@ export default async function dropPage({ params }: { params: { id: string } }) {
                   }).format(new Date(drop.createdAt))}
                 </time>
               </div>
-              <p className="font-medium text-foreground">
-                {drop.likesCount} j'aime
-              </p>
               <LikeButton dropId={drop.id} isLiked={drop.likedByMe} likeCount={drop.likesCount} />
             </div>
             {drop.isMine && (

@@ -14,7 +14,8 @@ export function useCommentUpdated({ dropId}: { dropId: number }, {dropComs} : { 
     useEffect(()=>{
         const release = retain();
         const stopComAdded = subscribe('comment:created', (data)=>{
-            if (data.comment.dropId === dropId && data.comment.parentId === null) {
+            if (data.comment.dropId !== dropId) return;
+            if (data.comment.parentId === null) {
                 setComments((s) => {
                     if (s.items.some((com) => com.id === data.comment.id)) return s;
                     return {
@@ -22,6 +23,15 @@ export function useCommentUpdated({ dropId}: { dropId: number }, {dropComs} : { 
                         items: [...s.items, data.comment],
                     };
                 });
+            } else {
+                setComments((s) => ({
+                    ...s,
+                    items: s.items.map((com) =>
+                        com.id === data.comment.parentId
+                            ? { ...com, repliesCount: com.repliesCount + 1 }
+                            : com
+                    ),
+                }));
             }
         });
         const stopComUpdated = subscribe('comment:updated', (data)=>{

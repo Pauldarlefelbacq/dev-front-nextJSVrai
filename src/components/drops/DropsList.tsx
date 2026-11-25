@@ -20,7 +20,7 @@ export async function DropsList({ searchParams } : {searchParams: Promise<Search
     }
 
     const query = apiParams.toString()
-    const dropsList = await apiGet<DropPage>(`/drops${query ? `?${query}` : ""}`);
+    const dropsList = await apiGet<DropPage>(`/drops${query ? `?${query}&pageSize=20` : "?pageSize=20"}`);
 
     return(
         <>

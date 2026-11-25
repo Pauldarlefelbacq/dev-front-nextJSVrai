@@ -5,8 +5,9 @@ import L, { layerGroup } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useEffect, useRef } from 'react';
 
-const NORMAL = { radius: 8, color: '#2563eb', weight: 2 }
-const ACTIVE = { radius: 12, color: '#f97316', weight: 3 };
+const NORMAL = { radius: 8, color: '#63d8f2', weight: 2 }
+const ACTIVE = { radius: 12, color: '#eaf249', weight: 3 };
+const SELECTED = { radius: 8, color: '#eaf249', weight: 2 };
 
 
 type DropsMapProps = {
@@ -36,16 +37,20 @@ export default function DropsMap({ drops, activeId, onSelect, LocationSelect }: 
             maxZoom: 19,
             attribution: '&copy; OpenStreetMap contributors',
         }).addTo(map);
+        if (onLocationSelectRef.current != undefined){
+            layer.current = L.layerGroup().addTo(map);
+            map.on('click', (event) => {
+                onLocationSelectRef.current?.(event.latlng.lat, event.latlng.lng);
+                const previous = markers.current.get(1)
+                if (previous) layer.current?.removeLayer(previous)
+                    
+                const m = L.circleMarker([event.latlng.lat, event.latlng.lng], SELECTED)
+                .addTo(layer.current!)
+                markers.current.set(1,m);
+            })
+        }
         layer.current = L.layerGroup().addTo(map);
-        map.on('click', (event) => {
-            onLocationSelectRef.current?.(event.latlng.lat, event.latlng.lng);
-            const previous = markers.current.get(1)
-            if (previous) layer.current?.removeLayer(previous)
-                
-            const m = L.circleMarker([event.latlng.lat, event.latlng.lng], NORMAL)
-            .addTo(layer.current!)
-            markers.current.set(1,m);
-        })
+        
         return() => {
             map.remove();
             mapRef.current = null;
