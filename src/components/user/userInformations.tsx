@@ -31,7 +31,7 @@ export function UserInformations({ user }: { user: UserProfile }){
                 <h2 className="text-2xl font-bold">À propos de moi: </h2>
                 <p className="bg-gray-500 rounded-sm w-fit p-1 text-black">{user.bio}</p>
             </div>
-            <div className="grid grid-cols-3 card w-full p-2 place-content-center mx-24">
+            <div className="grid grid-cols-3 card w-full p-2 place-content-center ">
                 <p>{user.stats.dropsCount} Drops</p>
                 <p>{user.stats.commentsCount} Commentaires</p>
                 <p>{user.stats.likesReceived} Likes reçues</p>
