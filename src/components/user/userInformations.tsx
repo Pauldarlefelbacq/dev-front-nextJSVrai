@@ -37,7 +37,7 @@ export function UserInformations({ user }: { user: UserProfile }){
                 <p>{user.stats.likesReceived} Likes reçues</p>
             </div>
             <div>
-                <p>Créé le {user.createdAt.split()}</p>
+                <p>Créé le {user.createdAt}</p>
             </div>
             <div className="card w-full p-5">
                 <h2 className="text-2xl font-bold">Drops</h2>
